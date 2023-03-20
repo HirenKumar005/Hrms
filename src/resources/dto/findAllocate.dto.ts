@@ -14,4 +14,14 @@ export class FindAllocateDevice {
   @IsString()
   @IsOptional()
   resourceName: string;
+
+  @ApiProperty({
+    example: 'Allocation',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  status: string;
 };

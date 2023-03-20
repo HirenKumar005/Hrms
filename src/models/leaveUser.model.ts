@@ -26,9 +26,9 @@ export class LeaveUser extends Model {
   @AllowNull
   @Column
   userId: number;
-  
+
   @ForeignKey(() => Users)
-  @AllowNull(false)
+  @AllowNull(true)
   @Column
   approvalBy: number;
 
@@ -44,7 +44,7 @@ export class LeaveUser extends Model {
   @Column
   leaveDays: number;
 
-  @AllowNull
+  @AllowNull(true)
   @Column({ type: DataTypes.DATEONLY })
   approvalDate: string;
 
@@ -75,5 +75,4 @@ export class LeaveUser extends Model {
 
   @BelongsTo(() => Users)
   users: Users[];
-  
 }

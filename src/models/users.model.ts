@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import {
   Column,
   Model,
@@ -23,6 +23,12 @@ import { EmergencyContact } from './emergencyContact.model';
 import { BankDetails } from './bankDetails.model';
 import { EducationDetails } from './educationDetails.model';
 import { ReportTo } from './reportTo.model';
+import {
+  CreateDateColumn,
+  UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
+} from 'typeorm';
 
 @Table
 export class Users extends Model {
@@ -94,15 +100,28 @@ export class Users extends Model {
   @Column
   personalEmail: string;
 
-  @Default(moment().format('YYYY-MM-DD h:mm:ss'))
-  @CreatedAt
-  @Column
-  createdAt: string;
+  @CreateDateColumn()
+  created_at: Date;
 
-  @Default(moment().format('YYYY-MM-DD h:mm:ss'))
-  @UpdatedAt
-  @Column
-  updatedAt: string;
+  @CreateDateColumn()
+  updated_at: Date;
+
+  @BeforeInsert()
+  insertCreated() {
+    this.created_at = new Date(
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+    );
+    this.updated_at = new Date(
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+    );
+  }
+
+  @BeforeUpdate()
+  insertUpdated() {
+    this.updated_at = new Date(
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+    );
+  }
 
   @Column({ defaultValue: 0 })
   isDeleted: boolean;

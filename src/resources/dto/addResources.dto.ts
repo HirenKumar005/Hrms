@@ -8,7 +8,7 @@ export class AddResources {
   @IsNumber()
   @Type(() => Number)
   @IsNotEmpty()
-  userId: number;
+  addedBy: number;
 
   @ApiProperty({
     example: 'Laptop',

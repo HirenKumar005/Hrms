@@ -1,12 +1,16 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CountOfDataService } from 'src/countOfData/countOfData.service';
+import { DamagedResources } from 'src/models/damagedResources.model';
 import { Designation } from 'src/models/designation.model';
+import { LeaveUser } from 'src/models/leaveUser.model';
 import { ReportTo } from 'src/models/reportTo.model';
+import { ResourcesDetails } from 'src/models/resourcesDetails.model';
 import { Support } from 'src/models/support.model';
 import { Users } from 'src/models/users.model';
 import { HandleResponse } from 'src/services/handleResponse';
 import { Messages } from 'src/utils/constants/message';
+import { ListOfSupportsDto } from './dto/listOfSupports.dto';
 
 @Injectable()
 export class DashboardService {
@@ -16,6 +20,11 @@ export class DashboardService {
     @InjectModel(Designation) private designationModel: typeof Designation,
     @InjectModel(ReportTo) private reportToModel: typeof ReportTo,
     @InjectModel(Support) private supportModel: typeof Support,
+    @InjectModel(LeaveUser) private addLeaveModel: typeof LeaveUser,
+    @InjectModel(ResourcesDetails)
+    private resourcesDetailsModel: ResourcesDetails,
+    @InjectModel(DamagedResources)
+    private DamagedResourcesModel: DamagedResources,
   ) {}
 
   async pieChart() {
@@ -147,8 +156,9 @@ export class DashboardService {
     }
   }
 
-  async listOfSupports() {
+  async listOfSupports(dto: ListOfSupportsDto) {
     let error = null;
+    let order: any = [dto.order];
 
     const listOfSupportsData: any = await this.supportModel
       .findAll({
@@ -157,6 +167,7 @@ export class DashboardService {
             model: this.userModel,
           },
         ],
+        order: dto.order ? order : []
       })
       .catch((err) => {
         error = err;

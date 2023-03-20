@@ -11,7 +11,7 @@ import {
   Default,
   AllowNull,
   ForeignKey,
-  BelongsTo
+  BelongsTo,
 } from 'sequelize-typescript';
 import { Users } from './users.model';
 
@@ -44,7 +44,6 @@ export class TaskSheet extends Model {
   @Column
   detailsOfTask: string;
 
-  @AllowNull(false)
   @Column({ type: DataTypes.TIME })
   estimateTime: string;
 
@@ -53,7 +52,7 @@ export class TaskSheet extends Model {
   takenTime: string;
 
   @Default('Pending')
-  @Column({ type: DataTypes.ENUM('Pending', 'Approve', 'Reject ')})
+  @Column({ type: DataTypes.ENUM('Pending', 'Approve', 'Reject ') })
   status: string;
 
   @Default(Moment().format('YYYY-MM-DD h:mm:ss'))

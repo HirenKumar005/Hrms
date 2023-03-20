@@ -2,13 +2,11 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Leave } from 'src/models/leave.model';
 import { LeaveUser } from 'src/models/leaveUser.model';
-import { IdValidationDto } from './dto/findLeave.dto';
 import { AddLeaveDto } from './dto/addLeave.dto';
 import { LeaveApprovalDto } from './dto/leaveApproval.dto';
 import { HandleResponse } from '../services/handleResponse';
 import { Messages } from 'src/utils/constants/message';
 import { Users } from 'src/models/users.model';
-import { exit } from 'process';
 
 @Injectable()
 export class LeaveService {
@@ -17,43 +15,6 @@ export class LeaveService {
     @InjectModel(Leave) private leaveModel: typeof Leave,
     @InjectModel(LeaveUser) private addLeaveModel: typeof LeaveUser,
   ) {}
-
-  // async findLeave(dto: IdValidationDto) {
-  //   let error = null;
-
-  //   const leave: any = await this.leaveModel
-  //     .findAll({
-  //       where: { ...dto, isDeleted: 0 },
-  //       order: [['id', 'DESC']],
-  //       limit: 2,
-  //     })
-  //     .catch((err) => {
-  //       error = err;
-  //     });
-
-  //   if (error) {
-  //     return HandleResponse(
-  //       HttpStatus.INTERNAL_SERVER_ERROR,
-  //       `${Messages.FAILED_TO} find leaves`,
-  //       undefined,
-  //       {
-  //         errorMessage: error.original.sqlMessage,
-  //         field: error.fields,
-  //       },
-  //     );
-  //   }
-
-  //   if (leave && leave.length > 0) {
-  //     return HandleResponse(HttpStatus.OK, '', leave, undefined);
-  //   } else {
-  //     return HandleResponse(
-  //       HttpStatus.OK,
-  //       Messages.NOT_FOUND,
-  //       undefined,
-  //       undefined,
-  //     );
-  //   }
-  // }
 
   async addLeave(dto: AddLeaveDto) {
     let error = null;
@@ -135,6 +96,7 @@ export class LeaveService {
       .findAll({
         attributes: [
           'id',
+          'userId',
           'leaveType',
           'fromDate',
           'toDate',
@@ -214,7 +176,7 @@ export class LeaveService {
 
       const totalLeavesOfUser: any = await this.leaveModel
         .findOne({
-          where: { id: dto.userId },
+          where: { assignTo: dto.userId },
         })
         .catch((err) => {
           error = err;
@@ -231,19 +193,23 @@ export class LeaveService {
           },
         );
       }
+
+      const totalLeave = totalLeavesOfUser.dataValues.totalLeave;
+
       const [dataValues] = leaveApprovalDetails;
 
       if (dataValues === 1) {
         let error = null;
 
-        let updatedTotalLeave = totalLeavesOfUser.dataValues.totalLeave - 1;
+        let updatedTotalLeave = totalLeave - 1;
 
         const updateLeave: any = await this.leaveModel
           .update(
             { totalLeave: updatedTotalLeave },
             {
               where: {
-                id: totalLeavesOfUser.dataValues.assignTo,
+                assignTo: totalLeavesOfUser.dataValues.assignTo,
+                id: totalLeavesOfUser.dataValues.id,
               },
             },
           )
@@ -306,6 +272,113 @@ export class LeaveService {
       return HandleResponse(
         HttpStatus.OK,
         `Leave rejected and ${Messages.UPDATE_SUCCESS}`,
+        undefined,
+        undefined,
+      );
+    }
+  }
+
+  async viewLeaveHistory(id: number) {
+    let error = null;
+
+    const findLeaveDetails: any = await this.addLeaveModel
+      .findAll({
+        attributes: [
+          'id',
+          'fromDate',
+          'toDate',
+          'leaveDays',
+          'approvalDate',
+          'reason',
+          'status',
+          'leaveType',
+        ],
+        where: {
+          userId: id,
+        },
+      })
+      .catch((err) => {
+        error = err;
+      });
+
+    if (error) {
+      return HandleResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${Messages.FAILED_TO} view your profile.`,
+        undefined,
+        {
+          errorMessage: error.original.sqlMessage,
+          field: error.fields,
+        },
+      );
+    }
+
+    if (findLeaveDetails && findLeaveDetails.length > 0) {
+      return HandleResponse(
+        HttpStatus.OK,
+        undefined,
+        findLeaveDetails,
+        undefined,
+      );
+    } else {
+      return HandleResponse(
+        HttpStatus.NOT_FOUND,
+        Messages.NOT_FOUND,
+        undefined,
+        undefined,
+      );
+    }
+  }
+
+  async leaveHistoryOfEmployees() {
+    let error = null;
+
+    const leaveHistoryOfEmployeesData: any = await this.addLeaveModel
+      .findAll({
+        attributes: [
+          'id',
+          'leaveType',
+          'fromDate',
+          'toDate',
+          'leaveDays',
+          'reason',
+          'status',
+        ],
+        include: [
+          {
+            model: this.userModel,
+            attributes: ['firstName', 'lastName'],
+            where: { role: 'Employee' },
+          },
+        ],
+      })
+      .catch((err) => {
+        error = err;
+      });
+
+    if (error) {
+      return HandleResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${Messages.FAILED_TO} list of supports.`,
+        undefined,
+        {
+          errorMessage: error.original.sqlMessage,
+          field: error.fields,
+        },
+      );
+    }
+
+    if (leaveHistoryOfEmployeesData && leaveHistoryOfEmployeesData.length > 0) {
+      return HandleResponse(
+        HttpStatus.OK,
+        undefined,
+        leaveHistoryOfEmployeesData,
+        undefined,
+      );
+    } else {
+      return HandleResponse(
+        HttpStatus.NOT_FOUND,
+        Messages.NOT_FOUND,
         undefined,
         undefined,
       );

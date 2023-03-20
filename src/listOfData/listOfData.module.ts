@@ -11,6 +11,7 @@ import { ListOfDataService } from './listOfData.service';
 import { Resources } from 'src/models/resources.model';
 import { Qualification } from 'src/models/qualification.model';
 import { Support } from 'src/models/support.model';
+import { ResourcesDetails } from 'src/models/resourcesDetails.model';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { Support } from 'src/models/support.model';
       Resources,
       Qualification,
       Support,
+      ResourcesDetails
     ]),
   ],
   controllers: [ListOfDataController],

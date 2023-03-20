@@ -11,10 +11,11 @@ import {
   Default,
   AllowNull,
   ForeignKey,
-  BelongsTo
+  BelongsTo,
 } from 'sequelize-typescript';
 import { Users } from './users.model';
 import { Recruitment } from './recruitment.model';
+import { Designation } from './designation.model';
 
 @Table
 export class FeedBack extends Model {
@@ -23,22 +24,53 @@ export class FeedBack extends Model {
   @Column
   id: number;
 
-  @ForeignKey(() => Users)
-  @AllowNull(false)
-  @Column
-  userId: number;
-
   @ForeignKey(() => Recruitment)
   @AllowNull(false)
   @Column
   recruitmentId: number;
 
+  @ForeignKey(() => Users)
   @AllowNull(false)
-  @Column({ type: DataTypes.TEXT})
+  @Column
+  assineeId: number;
+
+  @ForeignKey(() => Designation)
+  @AllowNull(false)
+  @Column
+  technology: number;
+
+  @AllowNull(false)
+  @Column({ type: DataTypes.ENUM('Online', 'Offline') })
+  type: string;
+
+  @AllowNull(false)
+  @Column({ type: DataTypes.DATEONLY })
+  dateOfInterview: Date;
+
+  @AllowNull(false)
+  @Column({ type: DataTypes.TIME })
+  timeOfInterview: Date;
+
+  @Column
+  link: string;
+
+  @Column
+  english: number;
+
+  @Column
+  communication: number;
+
+  @Column
+  confidence: number;
+
+  @Column
   review: string;
 
   @AllowNull(false)
-  @Column({ type: DataTypes.ENUM('HR', 'Technical1', 'Technical2', 'finalReview')})
+  @Column({
+    type: DataTypes.ENUM('Pending', 'Selected', 'Rejected'),
+    defaultValue: 'Pending',
+  })
   status: string;
 
   @Default(Moment().format('YYYY-MM-DD h:mm:ss'))
@@ -54,9 +86,12 @@ export class FeedBack extends Model {
   @Column({ defaultValue: 0 })
   isDeleted: boolean;
 
+  @BelongsTo(() => Designation)
+  designation: Designation;
+
   @BelongsTo(() => Users)
   users: Users[];
-  
+
   @BelongsTo(() => Recruitment)
   recruitment: Recruitment[];
-};
+}

@@ -12,6 +12,7 @@ import { ListOfDataDto } from './dto/listOfData.dto';
 import { Resources } from 'src/models/resources.model';
 import { Qualification } from 'src/models/qualification.model';
 import { Support } from 'src/models/support.model';
+import { ResourcesDetails } from 'src/models/resourcesDetails.model';
 const salt = 10;
 
 @Injectable()
@@ -27,6 +28,7 @@ export class ListOfDataService {
     @InjectModel(Qualification)
     private qualificationModel: typeof Qualification,
     @InjectModel(Support) private supportModel: Support,
+    @InjectModel(ResourcesDetails) private resourcesDetailsModel: ResourcesDetails,
   ) {}
 
   async listOfData(dto: ListOfDataDto) {

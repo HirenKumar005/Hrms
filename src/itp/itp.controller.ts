@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ItpService } from './itp.service';
 import { IdValidationDto } from './dto/findCourse.dto';
-import { ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from 'src/services/auth/decorators/roles.decorator';
 import { JwtGuard } from 'src/services/auth/guard/jwt.guard';
 import { RolesGuard } from 'src/services/auth/guard/roles.guard';
@@ -18,6 +18,7 @@ import { DeleteCourse } from './dto/deleteCourse.dto';
 import { TopicDto } from './dto/addTopic.dto';
 import { UpdateTopicDto } from './dto/updateTopic.dto';
 import { DeleteTopic } from './dto/deleteTopic.dto';
+import { AssignCourse } from './dto/assignCourse.dto'; 
 
 @Controller('api/itp')
 export class ItpController {
@@ -62,5 +63,14 @@ export class ItpController {
   @Post('/listOfTopics')
   findTopic(@Body() dto: IdValidationDto) {
     return this.itpService.findTopic(dto);
+  }
+
+  @Roles(Role.Admin, Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Post('/assignCourse')
+  assignCourse(@Body() dto: AssignCourse) {
+    return this.itpService.assignCourse(dto);
   }
 }

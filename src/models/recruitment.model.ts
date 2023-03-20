@@ -32,7 +32,6 @@ export class Recruitment extends Model {
   userId: number;
 
   @ForeignKey(() => Qualification)
-  @AllowNull(false)
   @Column
   qualificationId: number;
 
@@ -56,21 +55,28 @@ export class Recruitment extends Model {
   @Column
   resume: string;
 
-  @ForeignKey(() => Designation)
   @AllowNull(false)
+  @Column
+  english: number;
+
+  @AllowNull(false)
+  @Column
+  communication: number;
+
+  @AllowNull(false)
+  @Column
+  confidence: number;
+
+  @ForeignKey(() => Designation)
   @Column
   technology: number;
 
   @AllowNull(false)
   @Column
-  link: string;
+  review: string;
 
   @AllowNull(false)
-  @Column({ type: DataTypes.ENUM('Online', 'Offline')})
-  type: string;
-
-  @AllowNull(false)
-  @Column({ type: DataTypes.ENUM('Selected', 'Pending', 'Rejected')})
+  @Column({ type: DataTypes.ENUM('Selected', 'Rejected') })
   status: string;
 
   @Default(Moment().format('YYYY-MM-DD h:mm:ss'))
@@ -92,6 +98,9 @@ export class Recruitment extends Model {
   @BelongsTo(() => Qualification)
   qualification: Qualification;
 
-  @HasMany(() =>FeedBack)
+  @HasMany(() => FeedBack)
   feedBack: FeedBack[];
-};
+
+  @BelongsTo(() => Users)
+  users: Users[];
+}

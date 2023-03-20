@@ -10,7 +10,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { LeaveService } from './leave.service';
-import { IdValidationDto } from './dto/findLeave.dto';
 import { AddLeaveDto } from './dto/addLeave.dto';
 import { ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Roles } from 'src/services/auth/decorators/roles.decorator';
@@ -22,14 +21,6 @@ import { LeaveApprovalDto } from './dto/leaveApproval.dto';
 @Controller('api')
 export class LeaveController {
   constructor(private leaveService: LeaveService) {}
-
-  // @Roles(Role.Admin)
-  // @UseGuards(JwtGuard, RolesGuard)
-  // @ApiBearerAuth()
-  // @Post('admin/listOfLeave')
-  // findLeave(@Body() dto: IdValidationDto) {
-  //   return this.leaveService.findLeave(dto);
-  // }
 
   //Employee can add Leave.
   @Roles(Role.HR, Role.Employee)
@@ -56,5 +47,25 @@ export class LeaveController {
   @Put('admin/leaveApproval')
   leaveApproval(@Body() dto: LeaveApprovalDto) {
     return this.leaveService.leaveApproval(dto);
+  }
+
+  // This API for HR and Employee can view their previous history.
+  @Roles(Role.HR, Role.Employee)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Get('viewLeaveHistory/:id')
+  @ApiParam({ example: 1, name: 'id', required: true })
+  viewLeaveHistory(@Param('id') id: number) {
+    return this.leaveService.viewLeaveHistory(id);
+  }
+
+  @Roles(Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Get('hr/leaveHistoryOfEmployees')
+  leaveHistoryOfEmployees() {
+    return this.leaveService.leaveHistoryOfEmployees();
   }
 }

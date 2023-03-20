@@ -30,6 +30,7 @@ import { EmergencyContact } from './models/emergencyContact.model';
 import { Qualification } from './models/qualification.model';
 import { EducationDetails } from './models/educationDetails.model';
 import { TaskSheet } from './models/taskSheet.model';
+import { TasksheetModule } from './tasksheet/tasksheet.module';
 import { ReportModule } from './report/report.module';
 import { ResourcesModule } from './resources/resources.module';
 import { Resources } from './models/resources.model';
@@ -47,7 +48,9 @@ import { Address } from './models/address.model';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { ReportTo } from './models/reportTo.model';
+import { RecruitmentModule } from './recruitment/recruitment.module';
 import { DamagedResources } from './models/damagedResources.model';
+import { UserCourse } from './models/userCourse.model';
 
 @Module({
   imports: [
@@ -92,7 +95,8 @@ import { DamagedResources } from './models/damagedResources.model';
         Leave,
         LeaveUser,
         ReportTo,
-        DamagedResources
+        DamagedResources,
+        UserCourse
       ],
     }),
     MulterModule.register({
@@ -112,9 +116,11 @@ import { DamagedResources } from './models/damagedResources.model';
     DocumentModule,
     Documents,
     LeaveModule,
-    CountOfDataModule,
     ConfigurationModule,
     DashboardModule,
+    RecruitmentModule,
+    CountOfDataModule,
+    TasksheetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

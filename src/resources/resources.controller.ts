@@ -78,7 +78,7 @@ export class ResourcesController {
   listOfAllocation() {
     return this.resourcesService.listOfAllocation();
   }
-  
+
   @Roles(Role.HR)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
@@ -96,7 +96,7 @@ export class ResourcesController {
   listOfReallocation() {
     return this.resourcesService.listOfReallocation();
   }
-  
+
   @Roles(Role.HR)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
@@ -104,5 +104,14 @@ export class ResourcesController {
   @Get('hr/resources/listOfDamagedResources')
   listOfDamagedResources() {
     return this.resourcesService.listOfDamagedResources();
+  }
+
+  @Roles(Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Get('hr/countOfMultipleConfigurationData')
+  countOfMultipleConfigurationData() {
+    return this.resourcesService.countOfMultipleConfigurationData();
   }
 }

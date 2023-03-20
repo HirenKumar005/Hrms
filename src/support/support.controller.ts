@@ -14,6 +14,7 @@ import { JwtGuard } from 'src/services/auth/guard/jwt.guard';
 import { RolesGuard } from 'src/services/auth/guard/roles.guard';
 import { Role } from 'src/utils/constants/roles';
 import { AddSupport } from './dto/addSupport.dto';
+import { UpdateSupportStatus } from './dto/updateSupportStatus.dto';
 import { SupportService } from './support.service';
 
 @Controller('api')
@@ -46,5 +47,23 @@ export class SupportController {
   @Get('hr/listSupportDataOfEmployee')
   viewSupportByEmployee() {
     return this.supportService.listSupportDataOfEmployee();
+  }
+
+  @Roles(Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Post('hr/updateSupportStatus')
+  updateSupportStatus(@Body() dto: UpdateSupportStatus) {
+    return this.supportService.updateSupportStatus(dto);
+  }
+
+  @Roles(Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Get('hr/countOfMultipleSupportData')
+  countOfMultipleSupportData() {
+    return this.supportService.countOfMultipleSupportData();
   }
 }

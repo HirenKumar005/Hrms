@@ -10,6 +10,8 @@ import { DamagedResourcesDto } from './dto/damagedResources.dto';
 import { FindAllocateDevice } from './dto/findAllocate.dto';
 import { ResourcesAllocation } from './dto/resourcesAllocation.dto';
 import { Users } from 'src/models/users.model';
+import { Op } from 'sequelize';
+import * as Moment from 'moment';
 
 @Injectable()
 export class ResourcesService {
@@ -48,7 +50,7 @@ export class ResourcesService {
       return HandleResponse(
         HttpStatus.OK,
         `Resource ${Messages.ADD_SUCCESS}`,
-        undefined,
+        addResourcesData.dataValues.id,
         undefined,
       );
     }
@@ -156,14 +158,22 @@ export class ResourcesService {
 
   async findDevices(dto: FindAllocateDevice) {
     let error = null;
+
     const resourcesAllocationData = await this.resourcesModel
-      .findAll({
-        attributes: ['id', 'resourceName', 'resourceNo', 'isDeleted'],
-        where: { isDeleted: 0, resourceName: dto.resourceName },
-      })
-      .catch((err) => {
-        error = err;
-      });
+    .findAll({
+      attributes: ['id','resourceName', 'resourceNo'],
+      where: dto.resourceName ? { resourceName: dto.resourceName } : {isDeleted: 0},
+      include: [
+        {
+          model: this.resourcesDetailsModel,
+          attributes: ['id'],
+          where: dto.status ? {status: dto.status }:{isDeleted: 0},
+        },
+      ],
+    })
+    .catch((err) => {
+      error = err;
+    });
 
     if (error) {
       return HandleResponse(
@@ -399,7 +409,6 @@ export class ResourcesService {
         include: [
           {
             model: this.resourcesModel,
-            where: { isDeleted: 0 },
             attributes: ['resourceName', 'resourceNo'],
           },
         ],
@@ -567,5 +576,72 @@ export class ResourcesService {
         undefined,
       );
     }
+  }
+
+  async countOfMultipleConfigurationData() {
+    let error = null;
+
+    const totalDevicesData: any = await this.resourcesModel
+      .count()
+      .catch((err: any) => {
+        error = err;
+      });
+
+    const totalDevicesOfCurrentMonthData: any = await this.resourcesModel
+      .count({
+        where: {
+          createdAt: {
+            [Op.between]: [
+              Moment().startOf('month').format('YYYY-MM-DD'),
+              Moment().endOf('month').format('YYYY-MM-DD'),
+            ],
+          },
+        },
+      })
+      .catch((err: any) => {
+        error = err;
+      });
+
+    const totalAllocatedDevicesData: any = await this.resourcesDetailsModel
+      .count()
+      .catch((err: any) => {
+        error = err;
+      });
+
+    const totalAllocatedDevicesOfCurrentMonthData: any =
+      await this.resourcesDetailsModel
+        .count({
+          where: {
+            createdAt: {
+              [Op.between]: [
+                Moment().startOf('month').format('YYYY-MM-DD'),
+                Moment().endOf('month').format('YYYY-MM-DD'),
+              ],
+            },
+          },
+        })
+        .catch((err: any) => {
+          error = err;
+        });
+
+    if (error) {
+      return HandleResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${Messages.FAILED_TO} count data.`,
+        undefined,
+        {
+          errorMessage: error.original.sqlMessage,
+          field: error.fields,
+        },
+      );
+    }
+    const obj = {
+      totalDevicesData,
+      totalDevicesOfCurrentMonthData,
+      totalAllocatedDevicesData,
+      totalAllocatedDevicesOfCurrentMonthData,
+    };
+
+    return HandleResponse(HttpStatus.OK, undefined, obj, undefined);
   }
 }

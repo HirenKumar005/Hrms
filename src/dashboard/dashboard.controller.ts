@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam } from '@nestjs/swagger';
@@ -11,6 +13,7 @@ import { JwtGuard } from 'src/services/auth/guard/jwt.guard';
 import { RolesGuard } from 'src/services/auth/guard/roles.guard';
 import { Role } from 'src/utils/constants/roles';
 import { DashboardService } from './dashboard.service';
+import { ListOfSupportsDto } from './dto/listOfSupports.dto';
 
 @Controller('api')
 export class DashboardController {
@@ -34,12 +37,12 @@ export class DashboardController {
     return this.dashboardService.recentlyRegistration();
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.HR)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @Get('admin/listOfSupports')
-  listOfSupports() {
-    return this.dashboardService.listOfSupports();
+  @Post('listOfSupports')
+  listOfSupports(@Body() dto: ListOfSupportsDto) {
+    return this.dashboardService.listOfSupports(dto);
   }
 }

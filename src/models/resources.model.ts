@@ -17,6 +17,7 @@ import {
 import { Configuration } from './configuration.model';
 import { DamagedResources } from './damagedResources.model';
 import { Users } from './users.model';
+import { ResourcesDetails } from './resourcesDetails.model';
 
 @Table
 export class Resources extends Model {
@@ -67,4 +68,7 @@ export class Resources extends Model {
 
   @HasMany(() => DamagedResources, { foreignKey: 'resourceId' })
   DamagedResources: DamagedResources[];
+
+  @HasMany(() => ResourcesDetails, { foreignKey: 'resourceId' })
+  resourcesDetails: ResourcesDetails[];
 }

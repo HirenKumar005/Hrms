@@ -9,11 +9,14 @@ import { Topic } from 'src/models/topic.model';
 import { UpdateTopicDto } from './dto/updateTopic.dto';
 import { DeleteTopic } from './dto/deleteTopic.dto';
 import { DeleteCourse } from './dto/deleteCourse.dto';
+import { AssignCourse } from './dto/assignCourse.dto';
+import { UserCourse } from 'src/models/userCourse.model';
 @Injectable()
 export class ItpService {
   constructor(
     @InjectModel(Course) private courseModel: typeof Course,
     @InjectModel(Topic) private topicModel: typeof Topic,
+    @InjectModel(UserCourse) private userCourseModel: typeof UserCourse,
   ) {}
 
   async addCourse(dto: TopicDto) {
@@ -512,19 +515,27 @@ export class ItpService {
 
   async findTopic(dto: IdValidationDto) {
     let error = null;
-    const topicData: any = await this.topicModel
+
+    const topicData: any = await this.courseModel
       .findAll({
-        attributes: ['id', 'topicName', 'link', 'hour', 'isDeleted'],
-        where: dto.id ? { id: dto.id, isDeleted: 0 } : { isDeleted: 0 },
+        attributes: ['id', 'courseName', 'userId', 'duration', 'isDeleted'],
+        where: dto.courseId
+          ? { id: dto.courseId, isDeleted: 0 }
+          : dto.userId
+          ? { userId: dto.userId, isDeleted: 0 }
+          : { isDeleted: 0 },
         include: [
           {
-            model: this.courseModel,
-            attributes: ['id', 'courseName', 'userId', 'duration', 'isDeleted'],
-            where: dto.courseId
-              ? { id: dto.courseId, isDeleted: 0 }
-              : dto.userId
-              ? { userId: dto.userId, isDeleted: 0 }
-              : { isDeleted: 0 },
+            model: this.topicModel,
+            attributes: [
+              'id',
+              'courseId',
+              'topicName',
+              'link',
+              'hour',
+              'isDeleted',
+            ],
+            where: dto.id ? { id: dto.id, isDeleted: 0 } : { isDeleted: 0 },
           },
         ],
       })
@@ -545,6 +556,13 @@ export class ItpService {
     }
 
     if (topicData && topicData.length > 0) {
+      for (let item of topicData) {
+        let [dataValue] = item.dataValues.topic;
+        let noOfTopics = await this.topicModel.count({
+          where: { courseId: dataValue.dataValues.courseId },
+        });
+        item.dataValues.noOfTopics = noOfTopics;
+      }
       return HandleResponse(HttpStatus.OK, undefined, topicData, undefined);
     } else {
       return HandleResponse(
@@ -553,6 +571,52 @@ export class ItpService {
         undefined,
         undefined,
       );
+    }
+  }
+
+  async assignCourse(dto: AssignCourse) {
+    let error = null;
+
+    const userData: any = await this.userCourseModel
+      .findOne({ where: { ...dto } })
+      .catch((err) => {
+        error = err;
+      });
+
+    if (userData && Object.keys(userData).length > 0) {
+      return HandleResponse(
+        HttpStatus.OK,
+        Messages.ALREADY_ADDED,
+        undefined,
+        undefined,
+      );
+    } else {
+      const assignCourseData: any = await this.userCourseModel
+        .create({ ...dto })
+        .catch((err) => {
+          error = err;
+        });
+
+      if (error) {
+        return HandleResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `${Messages.FAILED_TO} assign course`,
+          undefined,
+          {
+            errorMessage: error.original.sqlMessage,
+            field: error.fields,
+          },
+        );
+      }
+
+      if (assignCourseData && Object.keys(assignCourseData).length > 0) {
+        return HandleResponse(
+          HttpStatus.OK,
+          Messages.ASSIGN_COURSE,
+          undefined,
+          undefined,
+        );
+      }
     }
   }
 }

@@ -12,5 +12,7 @@ export enum Messages {
   DOES_NOT_MATCH = 'does not match',
   DELETE_SUCCESS = 'deleted successfully',
   DUPLICATE_RECORD = 'Duplicate record found',
-  ALREADY_EXIST = 'Resource already allocated.'
+  ALREADY_EXIST = 'Resource already allocated.',
+  ASSIGN_COURSE = 'Course assign successfully',
+  ALREADY_ADDED = 'Course already assign'
 }

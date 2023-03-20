@@ -6,7 +6,7 @@ import {
   IsString,
   IsBoolean,
   IsOptional,
-  IsDate
+  IsDate,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -17,11 +17,16 @@ export class AddLeaveDto {
   @IsNotEmpty()
   userId: number;
 
-  @ApiProperty({ example: 13, type: 'number', format: 'number', required: true })
+  @ApiProperty({
+    example: 13,
+    type: 'number',
+    format: 'number',
+    required: true,
+  })
   @IsNumber()
   @Type(() => Number)
-  @IsNotEmpty()
-  approvalBy: number;
+  @IsOptional()
+  approvalBy?: number;
 
   @ApiProperty({
     example: '2021-11-08',
@@ -59,8 +64,8 @@ export class AddLeaveDto {
   })
   @IsDate()
   @Type(() => Date)
-  @IsNotEmpty()
-  approvalDate: Date;
+  @IsOptional()
+  approvalDate?: Date;
 
   @ApiProperty({
     example: 'ABC',
@@ -76,7 +81,7 @@ export class AddLeaveDto {
   @IsEnum({
     Pending: 'Pending',
     Approve: 'Approve',
-    Reject: 'Reject'
+    Reject: 'Reject',
   })
   @IsNotEmpty()
   status: string;
@@ -85,9 +90,8 @@ export class AddLeaveDto {
   @IsEnum({
     Full: 'Full',
     Half: 'Half',
-    WFH: 'WFH'
+    WFH: 'WFH',
   })
   @IsNotEmpty()
   leaveType: string;
-
 }

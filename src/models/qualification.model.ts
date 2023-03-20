@@ -12,6 +12,7 @@ import {
 } from 'sequelize-typescript';
 import * as moment from 'moment';
 import { EducationDetails } from './educationDetails.model';
+import { Recruitment } from './recruitment.model';
 
 @Table
 export class Qualification extends Model {
@@ -33,7 +34,10 @@ export class Qualification extends Model {
   @UpdatedAt
   @Column
   updatedAt: string;
-  
+
   @HasMany(() => EducationDetails, { foreignKey: 'qualificationId' })
   educationDetails: EducationDetails;
+
+  @HasMany(() => Recruitment, { foreignKey: 'qualificationId' })
+  recruitment: Recruitment;
 }

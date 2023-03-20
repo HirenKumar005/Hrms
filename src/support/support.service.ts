@@ -1,11 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
+import * as Moment from 'moment';
 import { Support } from 'src/models/support.model';
 import { HandleResponse } from 'src/services/handleResponse';
 import { AddSupport } from './dto/addSupport.dto';
 import { Messages } from 'src/utils/constants/message';
 import { Users } from 'src/models/users.model';
 import { Resources } from 'src/models/resources.model';
+import { UpdateSupportStatus } from './dto/updateSupportStatus.dto';
 
 @Injectable()
 export class SupportService {
@@ -46,9 +49,9 @@ export class SupportService {
     }
   }
 
-  async viewSupport(id:number) {
+  async viewSupport(id: number) {
     let error = null;
-    
+
     const supportHRData: any = await this.supportModel
       .findAll({
         where: { userId: id, isDeleted: 0 },
@@ -58,6 +61,7 @@ export class SupportService {
             required: true,
           },
         ],
+        order: [['id', 'ASC']],
       })
       .catch((err) => {
         error = err;
@@ -162,5 +166,179 @@ export class SupportService {
         undefined,
       );
     }
+  }
+
+  async updateSupportStatus(dto: UpdateSupportStatus) {
+    let error = null;
+
+    const updateStatus: any = await this.supportModel
+      .update(
+        { ...dto },
+        {
+          where: {
+            userId: dto.userId,
+            resourceId: dto.resourceId,
+          },
+        },
+      )
+      .catch((err) => {
+        error = err;
+      });
+
+    if (error) {
+      return HandleResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${Messages.FAILED_TO} update support status.`,
+        undefined,
+        {
+          errorMessage: error.original.sqlMessage,
+          field: error.fields,
+        },
+      );
+    }
+
+    const [dataValues] = updateStatus;
+    if (dataValues === 1) {
+      return HandleResponse(
+        HttpStatus.OK,
+        `Update support status ${Messages.UPDATE_SUCCESS}`,
+        undefined,
+        undefined,
+      );
+    } else {
+      return HandleResponse(
+        HttpStatus.NOT_FOUND,
+        Messages.NOT_FOUND,
+        undefined,
+        undefined,
+      );
+    }
+  }
+
+  async countOfMultipleSupportData() {
+    let error = null;
+
+    const openTicketData: any = await this.supportModel
+      .count({
+        where: {
+          status: 'Pending',
+        },
+      })
+      .catch((err: any) => {
+        error = err;
+      });
+
+    const openTicketOfCurrentMonthData: any = await this.supportModel
+      .count({
+        where: {
+          status: 'Pending',
+          createdAt: {
+            [Op.between]: [
+              Moment().startOf('month').format('YYYY-MM-DD'),
+              Moment().endOf('month').format('YYYY-MM-DD'),
+            ],
+          },
+        },
+      })
+      .catch((err: any) => {
+        error = err;
+      });
+
+    const closeTicketData: any = await this.supportModel
+      .count({
+        where: {
+          status: 'Completed',
+        },
+      })
+      .catch((err: any) => {
+        error = err;
+      });
+
+    const closeTicketOfCurrentMonthData: any = await this.supportModel
+      .count({
+        where: {
+          status: 'Completed',
+          createdAt: {
+            [Op.between]: [
+              Moment().startOf('month').format('YYYY-MM-DD'),
+              Moment().endOf('month').format('YYYY-MM-DD'),
+            ],
+          },
+        },
+      })
+      .catch((err: any) => {
+        error = err;
+      });
+
+    const inProgressTicketData: any = await this.supportModel
+      .count({
+        where: {
+          status: 'On Process',
+        },
+      })
+      .catch((err: any) => {
+        error = err;
+      });
+
+    const inProgressTicketOfCurrentMonthData: any = await this.supportModel
+      .count({
+        where: {
+          status: 'On Process',
+          createdAt: {
+            [Op.between]: [
+              Moment().startOf('month').format('YYYY-MM-DD'),
+              Moment().endOf('month').format('YYYY-MM-DD'),
+            ],
+          },
+        },
+      })
+      .catch((err: any) => {
+        error = err;
+      });
+
+    const totalTicketData: any = await this.supportModel
+      .count()
+      .catch((err: any) => {
+        error = err;
+      });
+
+    const totalTicketOfCurrentMonthData: any = await this.supportModel
+      .count({
+        where: {
+          createdAt: {
+            [Op.between]: [
+              Moment().startOf('month').format('YYYY-MM-DD'),
+              Moment().endOf('month').format('YYYY-MM-DD'),
+            ],
+          },
+        },
+      })
+      .catch((err: any) => {
+        error = err;
+      });
+
+    if (error) {
+      return HandleResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${Messages.FAILED_TO} count data.`,
+        undefined,
+        {
+          errorMessage: error.original.sqlMessage,
+          field: error.fields,
+        },
+      );
+    }
+    const obj = {
+      openTicketData,
+      openTicketOfCurrentMonthData,
+      closeTicketData,
+      closeTicketOfCurrentMonthData,
+      inProgressTicketData,
+      inProgressTicketOfCurrentMonthData,
+      totalTicketData,
+      totalTicketOfCurrentMonthData,
+    };
+
+    return HandleResponse(HttpStatus.OK, undefined, obj, undefined);
   }
 }

@@ -47,11 +47,12 @@ export class DocumentService {
     let error = null;
 
     const findDocuments: any = await this.documentModel
-      .findOne({
+      .findAll({
         where: {
           userId: hrId,
           isDeleted: 0,
         },
+        order:[['id','DESC']]
       })
       .catch((err) => {
         error = err;
