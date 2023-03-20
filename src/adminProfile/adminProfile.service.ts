@@ -13,6 +13,7 @@ import { City } from 'src/models/city.model';
 import { Country } from 'src/models/country.model';
 import { State } from 'src/models/state.model';
 import { Leave } from 'src/models/leave.model';
+import { ReportTo } from 'src/models/reportTo.model';
 const salt = 10;
 
 @Injectable()
@@ -24,6 +25,7 @@ export class AdminProfileService {
     @InjectModel(State) private stateModel: typeof State,
     @InjectModel(Country) private countryModel: typeof Country,
     @InjectModel(Leave) private leaveModel: typeof Leave,
+    @InjectModel(ReportTo) private reportToModel: typeof ReportTo,
     private jwt: JwtService,
   ) {}
 
@@ -54,6 +56,15 @@ export class AdminProfileService {
     }
 
     if (employee && Object.keys(employee).length > 0) {
+      const addedReportTo: any = await this.reportToModel
+        .create({
+          assignerId: dto.reportTo,
+          assigneeId: employee.id,
+        })
+        .catch((err) => {
+          error = err;
+        });
+
       const employeeLeave: any = await this.leaveModel
         .create({
           addedBy: dto.userId,
@@ -76,7 +87,12 @@ export class AdminProfileService {
         );
       }
 
-      if (employeeLeave && Object.keys(employeeLeave).length > 0) {
+      if (
+        addedReportTo &&
+        Object.keys(addedReportTo).length > 0 &&
+        employeeLeave &&
+        Object.keys(employeeLeave).length > 0
+      ) {
         return HandleResponse(
           HttpStatus.OK,
           `${dto.role} ${Messages.ADD_SUCCESS}`,

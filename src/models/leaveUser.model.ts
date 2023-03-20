@@ -56,6 +56,10 @@ export class LeaveUser extends Model {
   @Column({ type: DataTypes.ENUM('Pending', 'Approve', 'Reject') })
   status: string;
 
+  @AllowNull(true)
+  @Column
+  rejectReason: string;
+
   @AllowNull
   @Column({ type: DataTypes.ENUM('Full', 'Half', 'WFH') })
   leaveType: string;

@@ -150,7 +150,7 @@ export class LeaveService {
     if (dto.status === 'Approve') {
       const leaveApprovalDetails: any = await this.addLeaveModel
         .update(
-          { status: dto.status, isDeleted: 1 },
+          { status: dto.status, rejectReason: dto.reason, isDeleted: 1 },
           {
             where: {
               id: dto.id,
@@ -246,7 +246,7 @@ export class LeaveService {
     } else if (dto.status === 'Reject') {
       const leaveApprovalDetails: any = await this.addLeaveModel
         .update(
-          { status: dto.status, isDeleted: 1 },
+          { status: dto.status, rejectReason: dto.reason, isDeleted: 1 },
           {
             where: {
               id: dto.id,

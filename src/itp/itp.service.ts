@@ -11,6 +11,7 @@ import { DeleteTopic } from './dto/deleteTopic.dto';
 import { DeleteCourse } from './dto/deleteCourse.dto';
 import { AssignCourse } from './dto/assignCourse.dto';
 import { UserCourse } from 'src/models/userCourse.model';
+import { FindAssignCourse } from './dto/findUserCourseAssign.dto';
 @Injectable()
 export class ItpService {
   constructor(
@@ -617,6 +618,82 @@ export class ItpService {
           undefined,
         );
       }
+    }
+  }
+
+  async findAssignCourse(dto: FindAssignCourse) {
+    let error = null;
+
+    const findAssignCourseData: any = await this.userCourseModel
+      .findAll({
+        attributes: ['id', 'courseId', 'userId', 'isDeleted'],
+        where: dto.userId
+          ? { id: dto.userId, isDeleted: 0 }
+          : { isDeleted: 0 },
+        include: [
+          {
+            model: this.courseModel,
+            attributes: ['id', 'courseName', 'duration', 'isDeleted'],
+            where: dto.courseId
+              ? { id: dto.courseId, isDeleted: 0 }
+              : { isDeleted: 0 },
+            include: [
+              {
+                model: this.topicModel,
+                attributes: [
+                  'id',
+                  'courseId',
+                  'topicName',
+                  'link',
+                  'hour',
+                  'isDeleted',
+                ],
+              },
+            ],
+          },
+        ],
+      })
+      .catch((err) => {
+        error = err;
+      });
+
+    if (error) {
+      return HandleResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${Messages.FAILED_TO} find assign course`,
+        undefined,
+        {
+          errorMessage: error.original.sqlMessage,
+          field: error.fields,
+        },
+      );
+    }
+
+    if (findAssignCourseData && findAssignCourseData.length > 0) {
+      for (let item of findAssignCourseData) {
+        let dataValue = item.dataValues.course.dataValues.topic;
+        let noOfTopics: number;
+
+        for (let key of dataValue) {
+          noOfTopics = await this.topicModel.count({
+            where: { courseId: key.dataValues.courseId },
+          });
+        }
+        item.dataValues.noOfTopics = noOfTopics;
+      }
+      return HandleResponse(
+        HttpStatus.OK,
+        findAssignCourseData,
+        undefined,
+        undefined,
+      );
+    } else {
+      return HandleResponse(
+        HttpStatus.OK,
+        Messages.NOT_FOUND,
+        undefined,
+        undefined,
+      );
     }
   }
 }

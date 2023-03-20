@@ -140,21 +140,12 @@ export class TasksheetService {
     }
   }
 
-  async viewJuniorTasksheet(id: number) {
+  async listOfJuniorTasksheet(id: number) {
     let error = null;
 
     const viewJouniorTasksheetData: any = await this.tasksheetModel
       .findAll({
-        attributes: [
-          'id',
-          'addedBy',
-          'date',
-          'nameOfTask',
-          'detailsOfTask',
-          'estimateTime',
-          'takenTime',
-          'status',
-        ],
+        attributes: ['id', 'addedBy'],
         include: [
           {
             model: this.userModel,
@@ -162,6 +153,73 @@ export class TasksheetService {
           },
         ],
         where: { reportTo: id, isDeleted: 0 },
+      })
+      .catch((err) => {
+        error = err;
+      });
+
+    if (error) {
+      return HandleResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${Messages.FAILED_TO} view tasksheet.`,
+        undefined,
+        {
+          errorMessage: error.original.sqlMessage,
+          field: error.fields,
+        },
+      );
+    }
+
+    if (viewJouniorTasksheetData && viewJouniorTasksheetData.length > 0) {
+      let viewJouniorTasksheetDataWithName = viewJouniorTasksheetData.map(
+        (item) => {
+          item = {
+            id: item.dataValues.id,
+            addedBy: item.dataValues.addedBy,
+            firstname: item.dataValues.users.firstName,
+            lastname: item.dataValues.users.lastName,
+          };
+          return item;
+        },
+      );
+      return HandleResponse(
+        HttpStatus.OK,
+        undefined,
+        viewJouniorTasksheetDataWithName,
+        undefined,
+      );
+    } else {
+      return HandleResponse(
+        HttpStatus.NOT_FOUND,
+        Messages.NOT_FOUND,
+        undefined,
+        undefined,
+      );
+    }
+  }
+
+  async viewJuniorTasksheet(addedBy: number) {
+    let error = null;
+
+    const viewJouniorTasksheetData: any = await this.userModel
+      .findAll({
+        attributes: ['firstName', 'lastName'],
+        include: [
+          {
+            model: this.tasksheetModel,
+            attributes: [
+              'id',
+              'addedBy',
+              'date',
+              'nameOfTask',
+              'detailsOfTask',
+              'estimateTime',
+              'takenTime',
+              'status',
+            ],
+          },
+        ],
+        where: { id: addedBy, isDeleted: 0 },
       })
       .catch((err) => {
         error = err;

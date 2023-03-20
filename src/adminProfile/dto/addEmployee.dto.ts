@@ -26,6 +26,12 @@ export class AddEmployeeDto {
   @IsNotEmpty()
   addedBy: string;
 
+  @ApiProperty({ example: 3, type: 'number', format: 'number', required: true })
+  @IsNumber()
+  @Type(() => Number)
+  @IsNotEmpty()
+  reportTo: number;
+
   @ApiProperty({ example: 1, type: 'number', format: 'number', required: true })
   @IsNumber()
   @Type(() => Number)

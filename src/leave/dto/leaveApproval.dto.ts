@@ -24,4 +24,13 @@ export class LeaveApprovalDto {
   @IsString()
   @IsNotEmpty()
   status: string;
+
+  @ApiProperty({
+    example: 'ABC',
+    type: 'string',
+    format: 'string',
+    required: true,
+  })
+  @IsString()
+  reason: string;
 }

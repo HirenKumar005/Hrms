@@ -18,7 +18,8 @@ import { DeleteCourse } from './dto/deleteCourse.dto';
 import { TopicDto } from './dto/addTopic.dto';
 import { UpdateTopicDto } from './dto/updateTopic.dto';
 import { DeleteTopic } from './dto/deleteTopic.dto';
-import { AssignCourse } from './dto/assignCourse.dto'; 
+import { AssignCourse } from './dto/assignCourse.dto';
+import { FindAssignCourse } from './dto/findUserCourseAssign.dto';
 
 @Controller('api/itp')
 export class ItpController {
@@ -72,5 +73,14 @@ export class ItpController {
   @Post('/assignCourse')
   assignCourse(@Body() dto: AssignCourse) {
     return this.itpService.assignCourse(dto);
+  }
+
+  @Roles(Role.Employee)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Post('/findAssignCourse')
+  findAssignCourse(@Body() dto: FindAssignCourse) {
+    return this.itpService.findAssignCourse(dto);
   }
 }

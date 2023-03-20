@@ -22,42 +22,52 @@ import { TasksheetService } from './tasksheet.service';
 export class TasksheetController {
   constructor(private tasksheetService: TasksheetService) {}
 
-  @Roles(Role.Employee)
+  @Roles(Role.Employee, Role.HR)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @Post('employee/addTasksheet')
+  @Post('addTasksheet')
   addTasksheet(@Body() dto: AddTasksheet) {
     return this.tasksheetService.addTasksheet(dto);
   }
 
-  @Roles(Role.Employee)
+  @Roles(Role.Employee, Role.HR)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @Get('employee/viewTasksheet/:id')
+  @Get('viewTasksheet/:id')
   @ApiParam({ example: 1, name: 'id', required: true })
   viewTasksheet(@Param('id') id: number) {
     return this.tasksheetService.viewTasksheet(id);
   }
 
-  @Roles(Role.Employee)
+  @Roles(Role.Employee, Role.HR)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @Get('employee/viewJuniorTasksheet/:id')
+  @Get('viewJuniorTasksheet/:id')
   @ApiParam({ example: 1, name: 'id', required: true })
   viewJuniorTasksheet(@Param('id') id: number) {
     return this.tasksheetService.viewJuniorTasksheet(id);
   }
 
-  @Roles(Role.Employee)
+  @Roles(Role.Employee, Role.HR)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @Put('employee/approveTimesheet/:id')
+  @Put('approveTimesheet/:id')
   @ApiParam({ example: 1, name: 'id', required: true })
   approveTimesheet(@Body() dto: ApprovalTimesheetDto, @Param('id') id: number) {
     return this.tasksheetService.approveTimesheet(dto, id);
+  }
+
+  @Roles(Role.Employee, Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Get('listOfJuniorTasksheet/:addedBy')
+  @ApiParam({ example: 1, name: 'addedBy', required: true })
+  listOfJuniorTasksheet(@Param('addedBy') addedBy: number) {
+    return this.tasksheetService.listOfJuniorTasksheet(addedBy);
   }
 }

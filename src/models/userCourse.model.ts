@@ -6,7 +6,8 @@ import {
   AutoIncrement,
   PrimaryKey,
   AllowNull,
-  ForeignKey
+  ForeignKey,
+  BelongsTo
 } from 'sequelize-typescript';
 import { BeforeInsert, BeforeUpdate, CreateDateColumn } from 'typeorm';
 import { Course } from './course.model';
@@ -54,5 +55,8 @@ export class UserCourse extends Model {
 
   @Column({ defaultValue: false })
   isDeleted: boolean;
+
+  @BelongsTo(() => Course)
+  course: Course;
 
 }

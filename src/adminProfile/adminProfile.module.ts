@@ -12,6 +12,7 @@ import { City } from 'src/models/city.model';
 import { State } from 'src/models/state.model';
 import { Country } from 'src/models/country.model';
 import { Leave } from 'src/models/leave.model';
+import { ReportTo } from 'src/models/reportTo.model';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { Leave } from 'src/models/leave.model';
       State,
       Country,
       Leave,
+      ReportTo,
     ]),
     JwtModule.register({
       secret: 'JWTSecretKey',
