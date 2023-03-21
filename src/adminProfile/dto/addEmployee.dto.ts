@@ -5,6 +5,7 @@ import {
   IsMobilePhone,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -32,10 +33,10 @@ export class AddEmployeeDto {
   @IsNotEmpty()
   reportTo: number;
 
-  @ApiProperty({ example: 1, type: 'number', format: 'number', required: true })
+  @ApiProperty({ example: 1, type: 'number', format: 'number', required: false })
   @IsNumber()
   @Type(() => Number)
-  @IsNotEmpty()
+  @IsOptional()
   designationId: number;
 
   @ApiProperty({

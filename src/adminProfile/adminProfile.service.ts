@@ -96,7 +96,7 @@ export class AdminProfileService {
         return HandleResponse(
           HttpStatus.OK,
           `${dto.role} ${Messages.ADD_SUCCESS}`,
-          undefined,
+          {id: employee.id},
           undefined,
         );
       }
