@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
-  IsDate,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -20,7 +18,27 @@ export class AddSupport {
   @IsNumber()
   @Type(() => Number)
   @IsNotEmpty()
-  resourceId: number;
+  issueId: number;
+
+  @ApiProperty({
+    example: 'Laptop',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  resourceName: string;
+
+  @ApiProperty({
+    example: 'SI-02-22',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  resourceNo: string;
 
   @ApiProperty({
     example: 'laptop is not working',
@@ -31,30 +49,4 @@ export class AddSupport {
   @IsString()
   @IsNotEmpty()
   reason: string;
-
-  @ApiProperty({
-    example: '2023-01-21',
-    type: 'string',
-    format: 'date',
-    required: false,
-  })
-  @IsDate()
-  @Type(() => Date)
-  @IsOptional()
-  dateOfStatus: Date;
-
-  @ApiProperty({
-    example: 'Pending',
-    enum: ['Pending', 'On Process', 'Completed'],
-    type: 'string',
-    required: false,
-  })
-  @IsEnum({
-    Pending: 'Pending',
-    On_Process: 'On Process',
-    Completed: 'Completed',
-    required: false,
-  })
-  @IsNotEmpty()
-  status: string;
 }

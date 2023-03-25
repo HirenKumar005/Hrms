@@ -8,10 +8,11 @@ import { JwtStrategy } from 'src/services/auth/strategy/jwt.strategy';
 import { JwtGuard } from 'src/services/auth/guard/jwt.guard';
 import { Resources } from 'src/models/resources.model';
 import { Users } from 'src/models/users.model';
+import { SupportIssues } from 'src/models/supportIssue.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Support, Resources, Users]),
+    SequelizeModule.forFeature([Support, Resources, Users, SupportIssues]),
     JwtModule.register({
       secret: process.env.JWTSecretKey,
       signOptions: { expiresIn: process.env.EXPIRED_TIME },

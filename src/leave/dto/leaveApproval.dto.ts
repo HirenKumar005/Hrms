@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class LeaveApprovalDto {
   @ApiProperty({ example: 1, type: 'number', format: 'number', required: true })
@@ -14,6 +14,12 @@ export class LeaveApprovalDto {
   @Type(() => Number)
   @IsNotEmpty()
   userId: number;
+
+  @ApiProperty({ example: 1, type: 'number', format: 'number', required: true })
+  @IsNumber()
+  @Type(() => Number)
+  @IsOptional()
+  approvalBy: number;
 
   @ApiProperty({
     example: 'Approve',
@@ -32,5 +38,6 @@ export class LeaveApprovalDto {
     required: true,
   })
   @IsString()
+  @IsOptional()
   reason: string;
 }

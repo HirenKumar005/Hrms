@@ -14,7 +14,7 @@ import {
 } from 'sequelize-typescript';
 import { Users } from './users.model';
 import { Topic } from './topic.model';
-import { UserCourse } from './userCourse.model';
+import { AssignUserCourse } from './assignUserCourse.model';
 
 @Table
 export class Course extends Model {
@@ -51,6 +51,6 @@ export class Course extends Model {
   @HasMany(() => Topic)
   topic: Topic[];
 
-  @HasMany(() => UserCourse)
-  userCourse: Users[];
+  @HasMany(() => AssignUserCourse)
+  assignUserCourse: AssignUserCourse[];
 }

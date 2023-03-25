@@ -9,6 +9,7 @@ import { Messages } from 'src/utils/constants/message';
 import { Users } from 'src/models/users.model';
 import { Resources } from 'src/models/resources.model';
 import { UpdateSupportStatus } from './dto/updateSupportStatus.dto';
+import { SupportIssues } from 'src/models/supportIssue.model';
 
 @Injectable()
 export class SupportService {
@@ -16,13 +17,57 @@ export class SupportService {
     @InjectModel(Support) private supportModel: typeof Support,
     @InjectModel(Users) private userModel: typeof Users,
     @InjectModel(Resources) private resourceModel: typeof Resources,
+    @InjectModel(SupportIssues)
+    private supportIssuesModel: typeof SupportIssues,
   ) {}
 
   async addSupport(dto: AddSupport) {
     let error = null;
+    let resourceDetails: any;
+    let obj: any = {
+      issueId: dto.issueId,
+      reason: dto.reason,
+      userId: dto.userId,
+    };
+
+    if (dto.resourceName && dto.resourceNo) {
+      resourceDetails = await this.resourceModel
+        .findOne({
+          where: {
+            resourceNo: dto.resourceNo,
+            resourceName: dto.resourceName,
+          },
+        })
+        .catch((err) => {
+          error = err;
+        });
+
+      if (error) {
+        return HandleResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `${Messages.FAILED_TO} damaged resources.`,
+          undefined,
+          {
+            errorMessage: error.original.sqlMessage,
+            field: error.fields,
+          },
+        );
+      }
+
+      if (resourceDetails && Object.keys(resourceDetails).length > 0) {
+        obj.resourceId = resourceDetails.id;
+      } else {
+        return HandleResponse(
+          HttpStatus.NOT_FOUND,
+          Messages.DOES_NOT_MATCH,
+          undefined,
+          undefined,
+        );
+      }
+    }
 
     const addSupportData: any = await this.supportModel
-      .create({ ...dto })
+      .create(obj)
       .catch((err) => {
         error = err;
       });
@@ -52,13 +97,33 @@ export class SupportService {
   async viewSupport(id: number) {
     let error = null;
 
-    const supportHRData: any = await this.supportModel
+    const supportHRData: any = await this.userModel
       .findAll({
-        where: { userId: id, isDeleted: 0 },
+        attributes: ['id', 'firstName', 'lastName'],
+        where: { id, isDeleted: 0 },
         include: [
           {
-            model: this.resourceModel,
-            required: true,
+            model: this.supportModel,
+            where: { isDeleted: 0 },
+            attributes: [
+              'id',
+              'issueId',
+              'resourceId',
+              'reason',
+              'dateOfRequest',
+              'status',
+            ],
+            include: [
+              {
+                model: this.resourceModel,
+                attributes: ['id', 'resourceName', 'resourceNo'],
+              },
+              {
+                model: this.supportIssuesModel,
+                attributes: ['id', 'issue'],
+                where: { isDeleted: 0 },
+              },
+            ],
           },
         ],
         order: [['id', 'ASC']],
@@ -80,22 +145,7 @@ export class SupportService {
     }
 
     if (supportHRData && supportHRData.length > 0) {
-      let finalSupportData = [];
-      supportHRData.map((dataSupport: any) => {
-        finalSupportData.push({
-          id: dataSupport.id,
-          ResourceName: dataSupport.resource.resourceName,
-          reason: dataSupport.reason,
-          dateOfRequest: dataSupport.dateOfRequest,
-          status: dataSupport.status,
-        });
-      });
-      return HandleResponse(
-        HttpStatus.OK,
-        undefined,
-        finalSupportData,
-        undefined,
-      );
+      return HandleResponse(HttpStatus.OK, undefined, supportHRData, undefined);
     } else {
       return HandleResponse(
         HttpStatus.NOT_FOUND,
@@ -111,16 +161,29 @@ export class SupportService {
 
     const supportEmployeeData: any = await this.supportModel
       .findAll({
+        attributes: [
+          'id',
+          'issueId',
+          'resourceId',
+          'reason',
+          'dateOfRequest',
+          'status',
+        ],
         where: { isDeleted: 0 },
         include: [
           {
             model: this.userModel,
+            attributes: ['id', 'firstName', 'lastName'],
             where: { role: 'Employee', isDeleted: 0 },
-            required: true,
           },
           {
             model: this.resourceModel,
-            required: true,
+            attributes: ['id', 'resourceName', 'resourceNo'],
+          },
+          {
+            model: this.supportIssuesModel,
+            attributes: ['id', 'issue'],
+            where: { isDeleted: 0 },
           },
         ],
       })
@@ -140,22 +203,11 @@ export class SupportService {
       );
     }
 
-    let finalSupportData = [];
     if (supportEmployeeData && supportEmployeeData.length > 0) {
-      supportEmployeeData.map((supportData: any) => {
-        finalSupportData.push({
-          id: supportData.id,
-          userName: supportData.user.firstName,
-          ResourceName: supportData.resource.resourceName,
-          reason: supportData.reason,
-          dateOfRequest: supportData.dateOfRequest,
-          status: supportData.status,
-        });
-      });
       return HandleResponse(
         HttpStatus.OK,
         undefined,
-        finalSupportData,
+        supportEmployeeData,
         undefined,
       );
     } else {

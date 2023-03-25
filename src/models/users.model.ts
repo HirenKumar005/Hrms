@@ -29,6 +29,7 @@ import {
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
+import { Support } from './support.model';
 
 @Table
 export class Users extends Model {
@@ -149,4 +150,7 @@ export class Users extends Model {
 
   @HasMany(() => ReportTo, { foreignKey: 'assigneeId' })
   reportTo: ReportTo;
+
+  @HasMany(() => Support)
+  support: Support[]
 }

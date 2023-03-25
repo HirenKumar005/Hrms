@@ -266,10 +266,11 @@ export class AdminProfileService {
     profileImage: Express.Multer.File,
   ) {
     let error = null;
+    let data = profileImage ? { ...dto, profileImage: profileImage.filename} : { ...dto }
 
     const editAdminDetails: any = await this.adminModel
       .update(
-        { ...dto, profileImage: profileImage ? profileImage.filename : null },
+        data,
         {
           where: {
             id: adminId,

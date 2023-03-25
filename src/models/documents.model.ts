@@ -28,11 +28,11 @@ export class Documents extends Model {
 
   @AllowNull(false)
   @Column({
-    type: DataTypes.ENUM('Aadhar Card', 'Pan Card', 'Driving License'),
+    type: DataTypes.ENUM('Aadhar Card', 'Pan Card', 'Driving License', 'Education'),
   })
   fileName: string;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column
   cardNo: string;
 

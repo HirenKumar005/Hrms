@@ -7,22 +7,28 @@ import {
   PrimaryKey,
   AllowNull,
   ForeignKey,
-  HasMany,
+  BelongsTo
 } from 'sequelize-typescript';
 import { BeforeInsert, BeforeUpdate, CreateDateColumn } from 'typeorm';
-import { AssignUserCourse } from './assignUserCourse.model';
-import { Users } from './users.model';
+import { Course } from './course.model';
+import { UserCourse } from './userCourse.model';
+
 @Table
-export class UserCourse extends Model {
+export class AssignUserCourse extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
   id: number;
 
-  @ForeignKey(() => Users)
+  @ForeignKey(() => UserCourse)
   @AllowNull(false)
   @Column
-  userId: number;
+  userCourseId: number;
+
+  @ForeignKey(() => Course)
+  @AllowNull(false)
+  @Column
+  courseId: number;
 
   @CreateDateColumn()
   created_at: Date;
@@ -50,7 +56,6 @@ export class UserCourse extends Model {
   @Column({ defaultValue: false })
   isDeleted: boolean;
 
-  @HasMany(() => AssignUserCourse)
-  assignUserCourse: AssignUserCourse[]
-
-}
+  @BelongsTo(() => Course)
+  course: Course;
+};

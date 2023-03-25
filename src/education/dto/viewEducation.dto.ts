@@ -14,13 +14,4 @@ export class ViewEducation {
   @IsOptional()
   id: number;
 
-  @ApiProperty({
-    example: false,
-    type: 'boolean',
-    format: 'boolean',
-    required: true,
-  })
-  @IsBoolean()
-  @IsNotEmpty()
-  isDeleted: boolean;
 }

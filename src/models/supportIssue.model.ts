@@ -1,28 +1,24 @@
-import * as Moment from 'moment';
+import * as moment from 'moment';
 import {
+  AllowNull,
+  AutoIncrement,
   Column,
   Model,
-  Table,
-  AutoIncrement,
   PrimaryKey,
-  AllowNull,
-  ForeignKey,
-  HasMany,
+  Table,
 } from 'sequelize-typescript';
 import { BeforeInsert, BeforeUpdate, CreateDateColumn } from 'typeorm';
-import { AssignUserCourse } from './assignUserCourse.model';
-import { Users } from './users.model';
+
 @Table
-export class UserCourse extends Model {
+export class SupportIssues extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
   id: number;
 
-  @ForeignKey(() => Users)
   @AllowNull(false)
   @Column
-  userId: number;
+  issue: string;
 
   @CreateDateColumn()
   created_at: Date;
@@ -33,24 +29,20 @@ export class UserCourse extends Model {
   @BeforeInsert()
   insertCreated() {
     this.created_at = new Date(
-      Moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
     );
     this.updated_at = new Date(
-      Moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
     );
   }
 
   @BeforeUpdate()
   insertUpdated() {
     this.updated_at = new Date(
-      Moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
     );
   }
 
   @Column({ defaultValue: false })
   isDeleted: boolean;
-
-  @HasMany(() => AssignUserCourse)
-  assignUserCourse: AssignUserCourse[]
-
 }

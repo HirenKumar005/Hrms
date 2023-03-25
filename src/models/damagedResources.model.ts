@@ -31,11 +31,6 @@ export class DamagedResources extends Model {
   @ForeignKey(() => Users)
   @AllowNull(false)
   @Column
-  assignTo: number;
-
-  @ForeignKey(() => Users)
-  @AllowNull(false)
-  @Column
   addedBy: number;
 
   @AllowNull(true)

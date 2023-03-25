@@ -15,6 +15,7 @@ import { Resources } from './resources.model';
 import { Users } from './users.model';
 import { DataTypes } from 'sequelize';
 import * as moment from 'moment';
+import { SupportIssues } from './supportIssue.model';
 
 @Table
 export class Support extends Model {
@@ -28,8 +29,14 @@ export class Support extends Model {
   @Column
   userId: number;
 
-  @ForeignKey(() => Resources)
+  @ForeignKey(() => SupportIssues)
   @AllowNull(false)
+  @Column
+  issueId: number;
+
+  @Default(null)
+  @ForeignKey(() => Resources)
+  @AllowNull(true)
   @Column
   resourceId: number;
 
@@ -41,10 +48,12 @@ export class Support extends Model {
   @Column
   dateOfRequest: string;
 
+  @AllowNull(true)
   @Column({ type: DataTypes.DATEONLY })
   dateOfStatus: Date;
 
   @AllowNull(false)
+  @Default('Pending')
   @Column({
     type: DataTypes.ENUM('Pending', 'On Process', 'Completed'),
   })
@@ -62,6 +71,9 @@ export class Support extends Model {
 
   @Column({ defaultValue: 0 })
   isDeleted: boolean;
+
+  @BelongsTo(() => SupportIssues)
+  supportIssues: SupportIssues;
 
   @BelongsTo(() => Users)
   user: Users;

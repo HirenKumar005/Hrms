@@ -272,34 +272,9 @@ export class ResourcesService {
       );
     }
 
-    if (resourceDetails && Object.keys(resourceDetails).length > 0) {
-      const resourceDetailsData = await this.resourcesDetailsModel
-        .findOne({
-          where: {
-            resourceId: resourceDetails.id,
-          },
-          order: [['createdAt', 'DESC']],
-        })
-        .catch((err) => {
-          error = err;
-        });
-
-      if (error) {
-        return HandleResponse(
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          `${Messages.FAILED_TO} damaged resources.`,
-          undefined,
-          {
-            errorMessage: error.original.sqlMessage,
-            field: error.fields,
-          },
-        );
-      }
-
-      if (resourceDetailsData && Object.keys(resourceDetailsData).length > 0) {
+      if (resourceDetails && Object.keys(resourceDetails).length > 0) {
         let damageData = {
           resourceId: resourceDetails.id,
-          assignTo: resourceDetailsData.assignTo,
           addedBy: dto.addedBy,
           reason: dto.reason,
           status: 'Damaged',
@@ -388,15 +363,7 @@ export class ResourcesService {
           undefined,
           undefined,
         );
-      }
-    } else {
-      return HandleResponse(
-        HttpStatus.NOT_FOUND,
-        Messages.NOT_FOUND,
-        undefined,
-        undefined,
-      );
-    }
+      } 
   }
 
   async listOfDamagedResources() {
@@ -405,11 +372,15 @@ export class ResourcesService {
     const damagedData: any = await this.damagedResourcesModel
       .findAll({
         where: { isDeleted: 0 },
-        attributes: ['reason'],
+        attributes: ['reason', 'createdAt'],
         include: [
           {
             model: this.resourcesModel,
-            attributes: ['resourceName', 'resourceNo'],
+            attributes: ['id', 'resourceName', 'resourceNo'],
+          },
+          {
+            model: this.userModel,
+            attributes: ['id', 'firstName', 'lastName'],
           },
         ],
       })
@@ -455,7 +426,7 @@ export class ResourcesService {
           },
           {
             model: this.resourcesModel,
-            attributes: ['resourceName', 'resourceNo'],
+            attributes: ['id', 'resourceName', 'resourceNo', 'createdAt'],
           },
         ],
       })
@@ -544,7 +515,7 @@ export class ResourcesService {
           });
 
         const resourceDetails: any = await this.resourcesModel.findOne({
-          attributes: ['id', 'resourceName', 'resourceNo'],
+          attributes: ['id', 'resourceName', 'resourceNo', 'createdAt'],
           where: { id: item.dataValues.resourceId, isDeleted: 0 },
         });
 

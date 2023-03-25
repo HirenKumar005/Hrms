@@ -34,18 +34,11 @@ export class EducationDetails extends Model {
   
   @AllowNull(false)
   @Column
-  fileName: string;
-
-  @AllowNull(false)
-  @Column
   collegeName: string;
 
   @AllowNull(false)
   @Column
   passingYear: number;
-
-  @Column
-  fileUpload: string;
 
   @Default(moment().format('YYYY-MM-DD h:mm:ss'))
   @CreatedAt

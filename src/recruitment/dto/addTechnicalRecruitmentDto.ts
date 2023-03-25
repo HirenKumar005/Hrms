@@ -58,4 +58,12 @@ export class addTechnicalRecruitmentDto {
   @IsString()
   @IsNotEmpty()
   link: string;
+
+  @ApiProperty({ example: 'Technical1', type: 'string', required: true })
+  @IsEnum({
+    Technical1: 'Technical1',
+    Technical2: 'Technical2',
+  })
+  @IsNotEmpty()
+  round: string;
 }

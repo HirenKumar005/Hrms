@@ -387,4 +387,63 @@ export class RecruitmentService {
       );
     }
   }
+
+  async listOfTechnicalRoundOne() {
+    let error = null;
+
+    const listOfTechnicalRoundOneData: any = await this.feedbackModel
+      .findAll({
+        attributes: [
+          'id',
+          'technology',
+          'type',
+          'dateOfInterview',
+          'timeOfInterview',
+          'link',
+          'status',
+          'round',
+        ],
+        where: {
+          status: 'Selected',
+          round: 'Technical1',
+        },
+        include: [
+          {
+            model: this.addRecruitmentModel,
+            attributes: ['candidateName'],
+          },
+        ],
+      })
+      .catch((err) => {
+        error = err;
+      });
+
+    if (error) {
+      return HandleResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${Messages.FAILED_TO} list of supports.`,
+        undefined,
+        {
+          errorMessage: error.original.sqlMessage,
+          field: error.fields,
+        },
+      );
+    }
+
+    if (listOfTechnicalRoundOneData && listOfTechnicalRoundOneData.length > 0) {
+      return HandleResponse(
+        HttpStatus.OK,
+        undefined,
+        listOfTechnicalRoundOneData,
+        undefined,
+      );
+    } else {
+      return HandleResponse(
+        HttpStatus.NOT_FOUND,
+        Messages.NOT_FOUND,
+        undefined,
+        undefined,
+      );
+    }
+  }
 }

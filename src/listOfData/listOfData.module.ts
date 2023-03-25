@@ -12,6 +12,7 @@ import { Resources } from 'src/models/resources.model';
 import { Qualification } from 'src/models/qualification.model';
 import { Support } from 'src/models/support.model';
 import { ResourcesDetails } from 'src/models/resourcesDetails.model';
+import { SupportIssues } from 'src/models/supportIssue.model';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { ResourcesDetails } from 'src/models/resourcesDetails.model';
       Resources,
       Qualification,
       Support,
-      ResourcesDetails
+      ResourcesDetails,
+      SupportIssues
     ]),
   ],
   controllers: [ListOfDataController],

@@ -51,6 +51,8 @@ import { ReportTo } from './models/reportTo.model';
 import { RecruitmentModule } from './recruitment/recruitment.module';
 import { DamagedResources } from './models/damagedResources.model';
 import { UserCourse } from './models/userCourse.model';
+import { AssignUserCourse } from './models/assignUserCourse.model';
+import { SupportIssues } from './models/supportIssue.model';
 
 @Module({
   imports: [
@@ -96,7 +98,9 @@ import { UserCourse } from './models/userCourse.model';
         LeaveUser,
         ReportTo,
         DamagedResources,
-        UserCourse
+        UserCourse,
+        AssignUserCourse,
+        SupportIssues
       ],
     }),
     MulterModule.register({

@@ -20,7 +20,7 @@ import { SupportService } from './support.service';
 @Controller('api')
 export class SupportController {
   constructor(private supportService: SupportService) {}
-
+  
   @Roles(Role.HR, Role.Employee)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()

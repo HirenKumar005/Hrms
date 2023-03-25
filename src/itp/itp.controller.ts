@@ -75,7 +75,7 @@ export class ItpController {
     return this.itpService.assignCourse(dto);
   }
 
-  @Roles(Role.Employee)
+  @Roles(Role.Employee,Role.Admin, Role.HR)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)

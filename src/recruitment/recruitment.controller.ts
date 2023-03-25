@@ -85,4 +85,14 @@ export class RecruitmentController {
   listOfRecruitment() {
     return this.recruitmentService.listOfRecruitment();
   }
+
+  //HR can view details of selected technical round one.
+  @Roles(Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Get('hr/listOfTechnicalRoundOne')
+  listOfTechnicalRoundOne() {
+    return this.recruitmentService.listOfTechnicalRoundOne();
+  }
 }

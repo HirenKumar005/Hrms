@@ -144,13 +144,19 @@ export class LeaveService {
     }
   }
 
+  // This code is for Leave Approval
   async leaveApproval(dto: LeaveApprovalDto) {
     let error = null;
 
     if (dto.status === 'Approve') {
       const leaveApprovalDetails: any = await this.addLeaveModel
         .update(
-          { status: dto.status, rejectReason: dto.reason, isDeleted: 1 },
+          {
+            status: dto.status,
+            rejectReason: dto.reason,
+            isDeleted: true,
+            approvalBy: dto.approvalBy,
+          },
           {
             where: {
               id: dto.id,

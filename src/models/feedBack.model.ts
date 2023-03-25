@@ -73,6 +73,13 @@ export class FeedBack extends Model {
   })
   status: string;
 
+  @AllowNull(false)
+  @Column({
+    type: DataTypes.ENUM('HR', 'Technical1', 'Technical2'),
+    defaultValue: 'HR',
+  })
+  round: string;
+
   @Default(Moment().format('YYYY-MM-DD h:mm:ss'))
   @CreatedAt
   @Column

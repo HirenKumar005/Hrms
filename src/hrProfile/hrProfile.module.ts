@@ -10,6 +10,7 @@ import { EducationDetails } from 'src/models/educationDetails.model';
 import { EmergencyContact } from 'src/models/emergencyContact.model';
 import { Position } from 'src/models/position.model';
 import { Qualification } from 'src/models/qualification.model';
+import { ReportTo } from 'src/models/reportTo.model';
 import { State } from 'src/models/state.model';
 import { Users } from 'src/models/users.model';
 import { HrProfileController } from './hrProfile.controller';
@@ -29,6 +30,7 @@ import { HrProfileService } from './hrProfile.service';
       EmergencyContact,
       Qualification,
       Position,
+      ReportTo,
     ]),
     JwtModule.register({
       secret: process.env.JWTSecretKey,

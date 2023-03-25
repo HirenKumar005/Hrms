@@ -109,11 +109,12 @@ export class ConfigurationService {
           'vendor',
           'purchaseDate',
         ],
-        where: { ...dto },
+        where: dto.id ? { id : dto.id, isDeleted: 0 }: { isDeleted: 0},
         include: [
           {
             model: this.resourcesModel,
             attributes: ['id', 'resourceName', 'resourceNo'],
+            where: { isDeleted: 0 }
           },
         ],
       })

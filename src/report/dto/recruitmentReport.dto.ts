@@ -21,7 +21,7 @@ export class RecruitmentDto {
   endDate?: Date;
 
   @ApiProperty({
-    example: 'Node js',
+    example: 'NodeJs',
     type: 'string',
     format: 'string',
   })

@@ -35,7 +35,7 @@ export class AddDocument {
     required: true,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   cardNo: string;
 
   @ApiProperty({ type: 'string', format: 'binary', required: true })

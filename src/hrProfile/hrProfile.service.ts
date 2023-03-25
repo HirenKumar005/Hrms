@@ -14,6 +14,7 @@ import { EmergencyContact } from 'src/models/emergencyContact.model';
 import { Position } from 'src/models/position.model';
 import { Qualification } from 'src/models/qualification.model';
 import { BankDetails } from 'src/models/bankDetails.model';
+import { ReportTo } from 'src/models/reportTo.model';
 
 @Injectable()
 export class HrProfileService {
@@ -32,12 +33,14 @@ export class HrProfileService {
     private emergencyContactModel: typeof EmergencyContact,
     @InjectModel(Qualification)
     private qualificationModel: typeof Qualification,
+    @InjectModel(ReportTo)
+    private reportToModel: typeof ReportTo,
   ) {}
 
   async viewProfile(id: number) {
     let error = null;
 
-    const findDetails: any = await this.userModel
+    let findDetails: any = await this.userModel
       .findOne({
         attributes: [
           'id',
@@ -131,6 +134,19 @@ export class HrProfileService {
         error = err;
       });
 
+    const findReportToDetails: any = await this.reportToModel
+      .findOne({
+        where: {
+          assignerId: id
+        },
+        include: [{
+          model: this.userModel,
+          attributes: ['firstName','lastName']
+        }]
+      }).catch((err) => {
+        error = err;
+      });
+
     if (error) {
       return HandleResponse(
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -142,6 +158,8 @@ export class HrProfileService {
         },
       );
     }
+    
+    findDetails.dataValues.reportTo = findReportToDetails?.user ? findReportToDetails.user : null;
 
     if (findDetails && Object.keys(findDetails).length > 0) {
       return HandleResponse(HttpStatus.OK, undefined, findDetails, undefined);

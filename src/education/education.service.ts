@@ -7,6 +7,7 @@ import { Messages } from 'src/utils/constants/message';
 import { AddEducation } from './dto/addEducation.dto';
 import { DeleteEducation } from './dto/DeleteEducation.dto';
 import { ViewEducation } from './dto/viewEducation.dto';
+import { Documents } from 'src/models/documents.model';
 
 @Injectable()
 export class EducationService {
@@ -15,13 +16,15 @@ export class EducationService {
     private educationDetailsModel: typeof EducationDetails,
     @InjectModel(Qualification)
     private qualificationModel: typeof Qualification,
+    @InjectModel(Documents)
+    private documentsModel: typeof Documents,
   ) {}
 
   async addEducation(dto: AddEducation, fileUpload: Express.Multer.File) {
     let error = null;
 
     const addEducationDetails = await this.educationDetailsModel
-      .create({ ...dto, fileUpload: fileUpload.filename })
+      .create({ ...dto })
       .catch((err) => {
         error = err;
       });
@@ -39,12 +42,36 @@ export class EducationService {
     }
 
     if (addEducationDetails && Object.keys(addEducationDetails).length > 0) {
-      return HandleResponse(
-        HttpStatus.OK,
-        `Education details ${Messages.ADD_SUCCESS}.`,
-        undefined,
-        undefined,
-      );
+      const addDocument = await this.documentsModel
+        .create({
+          userId: dto.userId,
+          fileName: dto.fileName,
+          fileUpload: fileUpload.filename,
+        })
+        .catch((err) => {
+          error = err;
+        });
+
+      if (error) {
+        return HandleResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `${Messages.FAILED_TO} add education details.`,
+          undefined,
+          {
+            errorMessage: error.original.sqlMessage,
+            field: error.fields,
+          },
+        );
+      }
+
+      if (addDocument && Object.keys(addEducationDetails).length > 0) {
+        return HandleResponse(
+          HttpStatus.OK,
+          `Education details ${Messages.ADD_SUCCESS}.`,
+          undefined,
+          undefined,
+        );
+      }
     }
   }
 
@@ -53,7 +80,7 @@ export class EducationService {
 
     const findEducationDetails: any = await this.educationDetailsModel
       .findAll({
-        where: { ...dto },
+        where: dto.id ? { id: dto.id, isDeleted: 0 } : { isDeleted: 0 },
         include: [
           {
             model: this.qualificationModel,
@@ -79,9 +106,11 @@ export class EducationService {
     const educationDetails = findEducationDetails.map(
       (educationDetailsData: any) => {
         return {
+          id: educationDetailsData.id,
           collegeName: educationDetailsData.collegeName,
           qualification: educationDetailsData.qualification.qualification,
           year: educationDetailsData.passingYear,
+          isDeleted: educationDetailsData.isDeleted,
         };
       },
     );

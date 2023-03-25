@@ -79,13 +79,10 @@ export class TasksheetService {
       }
     } else {
       return HandleResponse(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        `${Messages.FAILED_TO} find user details.`,
+        HttpStatus.NOT_FOUND,
+        `Assignees are ${Messages.NOT_FOUND}`,
         undefined,
-        {
-          errorMessage: error.original.sqlMessage,
-          field: error.fields,
-        },
+        undefined,
       );
     }
   }

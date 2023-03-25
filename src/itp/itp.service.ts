@@ -12,12 +12,15 @@ import { DeleteCourse } from './dto/deleteCourse.dto';
 import { AssignCourse } from './dto/assignCourse.dto';
 import { UserCourse } from 'src/models/userCourse.model';
 import { FindAssignCourse } from './dto/findUserCourseAssign.dto';
+import { AssignUserCourse } from 'src/models/assignUserCourse.model';
 @Injectable()
 export class ItpService {
   constructor(
     @InjectModel(Course) private courseModel: typeof Course,
     @InjectModel(Topic) private topicModel: typeof Topic,
     @InjectModel(UserCourse) private userCourseModel: typeof UserCourse,
+    @InjectModel(AssignUserCourse)
+    private assignUserCourseModel: typeof AssignUserCourse,
   ) {}
 
   async addCourse(dto: TopicDto) {
@@ -399,13 +402,13 @@ export class ItpService {
     if (dataValue === 1) {
       return HandleResponse(
         HttpStatus.OK,
-        `Course is ${Messages.UPDATE_SUCCESS}`,
+        `Course is ${Messages.DELETED_SUCCESS}`,
         undefined,
         undefined,
       );
     } else {
       return HandleResponse(
-        HttpStatus.OK,
+        HttpStatus.NOT_FOUND,
         Messages.ID_NOT_FOUND,
         undefined,
         undefined,
@@ -578,20 +581,25 @@ export class ItpService {
   async assignCourse(dto: AssignCourse) {
     let error = null;
 
-    const userData: any = await this.userCourseModel
-      .findOne({ where: { ...dto } })
-      .catch((err) => {
-        error = err;
-      });
+    const findUser: any = await this.userCourseModel.findOne({
+      where: { userId: dto.userId },
+    }).catch((err) => {
+      error = err;
+    });
 
-    if (userData && Object.keys(userData).length > 0) {
+    if (error) {
       return HandleResponse(
-        HttpStatus.OK,
-        Messages.ALREADY_ADDED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${Messages.FAILED_TO} assign course`,
         undefined,
-        undefined,
+        {
+          errorMessage: error.original.sqlMessage,
+          field: error.fields,
+        },
       );
-    } else {
+    }
+
+    if (!findUser) {
       const assignCourseData: any = await this.userCourseModel
         .create({ ...dto })
         .catch((err) => {
@@ -611,42 +619,104 @@ export class ItpService {
       }
 
       if (assignCourseData && Object.keys(assignCourseData).length > 0) {
+        let courseData = dto.courseId.map((item: any) => {
+          return {
+            courseId: item,
+            userCourseId: assignCourseData.id,
+          };
+        });
+
+        const multipleAssignCourse: any = await this.assignUserCourseModel
+          .bulkCreate(courseData)
+          .catch((err) => {
+            error = err;
+          });
+
+        if (error) {
+          return HandleResponse(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            `${Messages.FAILED_TO} assign course`,
+            undefined,
+            {
+              errorMessage: error.original.sqlMessage,
+              field: error.fields,
+            },
+          );
+        }
+
+        if (multipleAssignCourse && multipleAssignCourse.length > 0) {
+          return HandleResponse(
+            HttpStatus.OK,
+            Messages.ASSIGN_COURSE,
+            undefined,
+            undefined,
+          );
+        } else {
+          await this.userCourseModel
+            .destroy({ where: { id: assignCourseData.id } })
+            .catch((err) => {
+              error = err;
+            });
+          if (error) {
+            return HandleResponse(
+              HttpStatus.INTERNAL_SERVER_ERROR,
+              `${Messages.FAILED_TO} assign course`,
+              undefined,
+              {
+                errorMessage: error.original.sqlMessage,
+                field: error.fields,
+              },
+            );
+          }
+        }
         return HandleResponse(
-          HttpStatus.OK,
-          Messages.ASSIGN_COURSE,
+          HttpStatus.NOT_FOUND,
+          Messages.NOT_FOUND,
           undefined,
           undefined,
         );
       }
+    } else {
+      return HandleResponse(
+        HttpStatus.NOT_FOUND,
+        Messages.ALREADY_ADDED,
+        undefined,
+        undefined,
+      );
     }
   }
 
   async findAssignCourse(dto: FindAssignCourse) {
     let error = null;
-
     const findAssignCourseData: any = await this.userCourseModel
       .findAll({
-        attributes: ['id', 'courseId', 'userId', 'isDeleted'],
+        attributes: ['id', 'userId', 'isDeleted'],
         where: dto.userId
-          ? { id: dto.userId, isDeleted: 0 }
+          ? { userId: dto.userId, isDeleted: 0 }
           : { isDeleted: 0 },
         include: [
           {
-            model: this.courseModel,
-            attributes: ['id', 'courseName', 'duration', 'isDeleted'],
-            where: dto.courseId
-              ? { id: dto.courseId, isDeleted: 0 }
-              : { isDeleted: 0 },
+            model: this.assignUserCourseModel,
+            attributes: ['id'],
             include: [
               {
-                model: this.topicModel,
-                attributes: [
-                  'id',
-                  'courseId',
-                  'topicName',
-                  'link',
-                  'hour',
-                  'isDeleted',
+                model: this.courseModel,
+                attributes: ['id', 'courseName', 'duration', 'isDeleted'],
+                where: dto.courseId
+                  ? { id: dto.courseId, isDeleted: 0 }
+                  : { isDeleted: 0 },
+                include: [
+                  {
+                    model: this.topicModel,
+                    attributes: [
+                      'id',
+                      'courseId',
+                      'topicName',
+                      'link',
+                      'hour',
+                      'isDeleted',
+                    ],
+                  },
                 ],
               },
             ],
@@ -671,15 +741,14 @@ export class ItpService {
 
     if (findAssignCourseData && findAssignCourseData.length > 0) {
       for (let item of findAssignCourseData) {
-        let dataValue = item.dataValues.course.dataValues.topic;
-        let noOfTopics: number;
-
-        for (let key of dataValue) {
-          noOfTopics = await this.topicModel.count({
-            where: { courseId: key.dataValues.courseId },
+        let obj = item.dataValues.assignUserCourse;
+        for (let key of obj) {
+          let [dataValue] = key.dataValues.course.dataValues.topic;
+          const noOfTopics: any = await this.topicModel.count({
+            where: { courseId: dataValue.dataValues.courseId },
           });
+          key.dataValues.course.dataValues.noOfTopics = noOfTopics;
         }
-        item.dataValues.noOfTopics = noOfTopics;
       }
       return HandleResponse(
         HttpStatus.OK,
@@ -689,7 +758,7 @@ export class ItpService {
       );
     } else {
       return HandleResponse(
-        HttpStatus.OK,
+        HttpStatus.NOT_FOUND,
         Messages.NOT_FOUND,
         undefined,
         undefined,
