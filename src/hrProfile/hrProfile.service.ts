@@ -104,10 +104,8 @@ export class HrProfileService {
             model: this.educationDetailsModel,
             attributes: [
               'id',
-              'fileName',
               'collegeName',
               'passingYear',
-              'fileUpload',
             ],
             include: [
               {
@@ -137,7 +135,7 @@ export class HrProfileService {
     const findReportToDetails: any = await this.reportToModel
       .findOne({
         where: {
-          assignerId: id
+          assigneeId: id
         },
         include: [{
           model: this.userModel,

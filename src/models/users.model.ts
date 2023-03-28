@@ -148,7 +148,7 @@ export class Users extends Model {
   @HasMany(() => EducationDetails, { foreignKey: 'userId' })
   educationDetails: EducationDetails;
 
-  @HasMany(() => ReportTo, { foreignKey: 'assigneeId' })
+  @HasMany(() => ReportTo, { foreignKey: 'assignerId' })
   reportTo: ReportTo;
 
   @HasMany(() => Support)

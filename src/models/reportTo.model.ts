@@ -25,6 +25,6 @@ export class ReportTo extends Model {
   @Column
   assigneeId: number;
 
-  @BelongsTo(() => Users, { foreignKey: 'assigneeId' })
+  @BelongsTo(() => Users, { foreignKey: 'assignerId' })
   user: Users;
 }

@@ -20,7 +20,7 @@ export class HrProfileController {
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Get('viewProfile/:id')
-  @ApiParam({ example: 1, name: 'id', required: true })
+  @ApiParam({ example: 4, name: 'id', required: true })
   viewProfile(@Param('id') id: number) {
     return this.hrProfileService.viewProfile(id);
   }

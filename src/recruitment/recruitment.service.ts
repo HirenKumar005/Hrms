@@ -185,6 +185,7 @@ export class RecruitmentService {
       .findAll({
         attributes: [
           'id',
+          'recruitmentId',
           'technology',
           'type',
           'dateOfInterview',
