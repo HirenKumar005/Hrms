@@ -182,6 +182,7 @@ export class ItpService {
 
   async updateTopic(dto: UpdateTopicDto) {
     let error = null;
+    let dataValue: any;
 
     const detailsOfCourse: any = await this.courseModel
       .findOne({
@@ -192,7 +193,7 @@ export class ItpService {
       });
 
     if (dto.courseId && dto.courseName) {
-      await this.courseModel
+      const updateCourse: any = await this.courseModel
         .update(
           { courseName: dto.courseName },
           {
@@ -214,22 +215,23 @@ export class ItpService {
           },
         );
       }
+      [dataValue] = updateCourse;
     }
 
     let findOfTopic: any = [];
     let topic: any;
-    let updateOfTopic: any;
 
     if (dto.topic.length > 0) {
-      if (dto.topic[0].id) {
-        for (let item of dto.topic) {
+      let item: any;
+      for (item of dto.topic) {
+        if (item.id) {
           findOfTopic.push(
             await this.topicModel.findOne({
               where: { id: item.id },
             }),
           );
 
-          updateOfTopic = await this.topicModel
+          const updateOfTopic: any = await this.topicModel
             .update(item, { where: { id: item.id } })
             .catch((err) => {
               error = err;
@@ -246,25 +248,76 @@ export class ItpService {
               },
             );
           }
-        }
-      } else {
-        let values = dto.topic.map((item: any) => {
-          return {
-            courseId: dto.courseId,
-            topicName: item.topicName,
-            link: item.link,
-            hour: item.hour,
-          };
-        });
+          [dataValue] = updateOfTopic;
+        } else {
+          item['courseId'] = dto.courseId;
+          topic = await this.topicModel.create(item).catch((err) => {
+            error = err;
+          });
 
-        topic = await this.topicModel.bulkCreate(values).catch((err) => {
-          error = err;
-        });
+          if (error) {
+            return HandleResponse(
+              HttpStatus.INTERNAL_SERVER_ERROR,
+              `${Messages.FAILED_TO} add topic`,
+              undefined,
+              {
+                errorMessage: error.original.sqlMessage,
+                field: error.fields,
+              },
+            );
+          }
+        }
+      }
+    }
+
+    if ((topic && Object.keys(topic).length > 0) || dataValue === 1) {
+      let durationUpdated: any;
+      if (dto.topic.length > 0) {
+        let hour: any = [];
+        let updateOfDuration: number = 0;
+        let result: number = 0;
+
+        for (let item of findOfTopic) {
+          result = result + item.dataValues.hour;
+        }
+
+        let updateDuration = (data: any, data2: any[]) => {
+          let total = data;
+          for (let item in data2) {
+            total += data2[item];
+          }
+          return total;
+        };
+
+        let condition: number;
+        for (let item of dto.topic) {
+          if (!item.id) {
+            hour.push(item.hour);
+            condition = detailsOfCourse.dataValues.duration;
+          } else {
+            updateOfDuration = detailsOfCourse.dataValues.duration - result;
+            hour.push(item.hour);
+            condition = updateOfDuration;
+          }
+        }
+
+        const updateOfCourseDuration: any = await this.courseModel
+          .update(
+            {
+              duration: updateDuration(condition, hour),
+            },
+            {
+              where: { id: dto.courseId },
+            },
+          )
+          .catch((err) => {
+            error = err;
+          });
 
         if (error) {
           return HandleResponse(
             HttpStatus.INTERNAL_SERVER_ERROR,
-            `${Messages.FAILED_TO} add topic`,
+            `${Messages.FAILED_TO} update duration`,
             undefined,
             {
               errorMessage: error.original.sqlMessage,
@@ -272,71 +325,11 @@ export class ItpService {
             },
           );
         }
-      }
-    } else {
-      return HandleResponse(
-        HttpStatus.NOT_FOUND,
-        `Topic ${Messages.NOT_FOUND}`,
-        undefined,
-        undefined,
-      );
-    }
 
-    if ((topic && Object.keys(topic).length > 0) || updateOfTopic[0] === 1) {
-      let updateDuration = (data: any, data2: any[]) => {
-        let total = data;
-        for (let item in data2) {
-          total += data2[item];
-        }
-        return total;
-      };
-
-      let hour: any;
-      let updateOfDuration: number = 0;
-
-      if (!dto.topic[0].id) {
-        hour = dto.topic.map((item) => item.hour);
-      } else {
-        let result: number = 0;
-        for (let item of findOfTopic) {
-          result = result + item.dataValues.hour;
-        }
-        updateOfDuration = detailsOfCourse.dataValues.duration - result;
-        hour = dto.topic.map((item) => item.hour);
+        [durationUpdated] = updateOfCourseDuration;
       }
 
-      let condition = !dto.topic[0].id
-        ? detailsOfCourse.dataValues.duration
-        : updateOfDuration;
-
-      const updateOfCourseDuration: any = await this.courseModel
-        .update(
-          {
-            duration: updateDuration(condition, hour),
-          },
-          {
-            where: { id: dto.courseId },
-          },
-        )
-        .catch((err) => {
-          error = err;
-        });
-
-      if (error) {
-        return HandleResponse(
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          `${Messages.FAILED_TO} update duration`,
-          undefined,
-          {
-            errorMessage: error.original.sqlMessage,
-            field: error.fields,
-          },
-        );
-      }
-
-      const [dataValue] = updateOfCourseDuration;
-
-      if (dataValue === 1) {
+      if (durationUpdated === 1 || dataValue === 1) {
         return HandleResponse(
           HttpStatus.OK,
           `Topic ${Messages.UPDATE_SUCCESS}`,
@@ -581,11 +574,13 @@ export class ItpService {
   async assignCourse(dto: AssignCourse) {
     let error = null;
 
-    const findUser: any = await this.userCourseModel.findOne({
-      where: { userId: dto.userId },
-    }).catch((err) => {
-      error = err;
-    });
+    const findUser: any = await this.userCourseModel
+      .findOne({
+        where: { userId: dto.userId },
+      })
+      .catch((err) => {
+        error = err;
+      });
 
     if (error) {
       return HandleResponse(
@@ -752,8 +747,8 @@ export class ItpService {
       }
       return HandleResponse(
         HttpStatus.OK,
-        findAssignCourseData,
         undefined,
+        findAssignCourseData,
         undefined,
       );
     } else {

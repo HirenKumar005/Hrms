@@ -72,9 +72,10 @@ export class LeaveService {
       }
 
       if (addLeaveByUser && Object.keys(addLeaveByUser).length > 0) {
+        let message = (dto.leaveDays > 1) ? `The Leaves ${Messages.ADD_SUCCESS}` : `The Leave ${Messages.ADD_SUCCESS}`;
         return HandleResponse(
           HttpStatus.OK,
-          `The Leave/Leaves ${Messages.ADD_SUCCESS}`,
+          message,
           undefined,
           undefined,
         );

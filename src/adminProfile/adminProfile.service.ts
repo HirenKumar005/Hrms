@@ -108,7 +108,7 @@ export class AdminProfileService {
 
     const employeeHrLogin: any = await this.userModel
       .findOne({
-        where: { email: dto.email },
+        where: { email: dto.email, isDeleted: 0 },
       })
       .catch((err: any) => {
         error = err;
@@ -116,7 +116,7 @@ export class AdminProfileService {
 
     const adminLogin: any = await this.adminModel
       .findOne({
-        where: { email: dto.email },
+        where: { email: dto.email, isDeleted: 0 },
       })
       .catch((err: any) => {
         error = err;
@@ -179,6 +179,7 @@ export class AdminProfileService {
       .findOne({
         where: {
           id: adminId,
+          isDeleted: 0
         },
       })
       .catch((err) => {
