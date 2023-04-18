@@ -220,6 +220,7 @@ export class ItpService {
 
     let findOfTopic: any = [];
     let topic: any;
+    let topicUpdated: any;
 
     if (dto.topic.length > 0) {
       let item: any;
@@ -248,7 +249,7 @@ export class ItpService {
               },
             );
           }
-          [dataValue] = updateOfTopic;
+          [topicUpdated] = updateOfTopic;
         } else {
           item['courseId'] = dto.courseId;
           topic = await this.topicModel.create(item).catch((err) => {
@@ -270,49 +271,75 @@ export class ItpService {
       }
     }
 
-    if ((topic && Object.keys(topic).length > 0) || dataValue === 1) {
+    if (
+      (topic && Object.keys(topic).length > 0) ||
+      dataValue === 1 ||
+      topicUpdated === 1
+    ) {
       let durationUpdated: any;
       if (dto.topic.length > 0) {
-        let hour: any = [];
-        let updateOfDuration: number = 0;
         let result: number = 0;
 
         for (let item of findOfTopic) {
           result = result + item.dataValues.hour;
         }
 
-        let updateDuration = (data: any, data2: any[]) => {
-          let total = data;
-          for (let item in data2) {
-            total += data2[item];
-          }
-          return total;
-        };
-
-        let condition: number;
         for (let item of dto.topic) {
+          let hour: any = [];
           if (!item.id) {
+            let updateDuration: any;
+            let condition: number;
             hour.push(item.hour);
             condition = detailsOfCourse.dataValues.duration;
+            updateDuration = (data: any, data2: any[]) => {
+              let total = data;
+              for (let item in data2) {
+                total += data2[item];
+              }
+              return total;
+            };
+            let updateOfCourseDuration: any = await this.courseModel
+              .update(
+                {
+                  duration: updateDuration(condition, hour),
+                },
+                {
+                  where: { id: dto.courseId },
+                },
+              )
+              .catch((err) => {
+                error = err;
+              });
+            [durationUpdated] = updateOfCourseDuration;
           } else {
-            updateOfDuration = detailsOfCourse.dataValues.duration - result;
+            let condition: number;
+            let updateDuration: any;
+            let updateOfDuration: number =
+              detailsOfCourse.dataValues.duration - result;
             hour.push(item.hour);
             condition = updateOfDuration;
+            updateDuration = (data: any, data2: any[]) => {
+              let total = data;
+              for (let item in data2) {
+                total += data2[item];
+              }
+              return total;
+            };
+            let updateOfCourseDuration: any = await this.courseModel
+              .update(
+                {
+                  duration: updateDuration(condition, hour),
+                },
+                {
+                  where: { id: dto.courseId },
+                },
+              )
+              .catch((err) => {
+                error = err;
+              });
+            [durationUpdated] = updateOfCourseDuration;
           }
         }
-
-        const updateOfCourseDuration: any = await this.courseModel
-          .update(
-            {
-              duration: updateDuration(condition, hour),
-            },
-            {
-              where: { id: dto.courseId },
-            },
-          )
-          .catch((err) => {
-            error = err;
-          });
 
         if (error) {
           return HandleResponse(
@@ -325,8 +352,6 @@ export class ItpService {
             },
           );
         }
-
-        [durationUpdated] = updateOfCourseDuration;
       }
 
       if (durationUpdated === 1 || dataValue === 1) {
@@ -344,13 +369,6 @@ export class ItpService {
           undefined,
         );
       }
-    } else {
-      return HandleResponse(
-        HttpStatus.NOT_FOUND,
-        Messages.NOT_FOUND,
-        undefined,
-        undefined,
-      );
     }
   }
 

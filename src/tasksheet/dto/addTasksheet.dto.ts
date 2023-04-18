@@ -17,13 +17,12 @@ export class AddTasksheet {
   addedBy: number;
 
   @ApiProperty({
-    example: '2023-01-21',
+    example: '2021-11-08',
     type: 'string',
-    format: 'date',
+    format: 'Date',
     required: true,
   })
-  @IsDate()
-  @Type(() => Date)
+  @IsString()
   @IsNotEmpty()
   date: Date;
 

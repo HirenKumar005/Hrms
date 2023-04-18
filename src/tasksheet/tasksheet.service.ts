@@ -7,6 +7,7 @@ import { Messages } from 'src/utils/constants/message';
 import { ReportTo } from 'src/models/reportTo.model';
 import { Users } from 'src/models/users.model';
 import { ApprovalTimesheetDto } from './dto/approvalTasksheet.dto';
+import * as moment from 'moment'
 
 @Injectable()
 export class TasksheetService {
@@ -42,8 +43,11 @@ export class TasksheetService {
     }
 
     if (findReportToData && Object.keys(findReportToData).length > 0) {
+      const date: any = moment(dto.date, "YYYY-MM-DD");
+      delete dto.date;
+      
       const addTasksheetData: any = await this.tasksheetModel
-        .create({ ...dto, reportTo: findReportToData.dataValues.assignerId })
+        .create({ ...dto, reportTo: findReportToData.dataValues.assignerId, date })
         .catch((err) => {
           error = err;
         });
