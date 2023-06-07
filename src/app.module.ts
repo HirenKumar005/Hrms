@@ -64,11 +64,11 @@ import { SupportIssues } from './models/supportIssue.model';
     }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      host: 'bnorca3wrur2z3r9ujv2-mysql.services.clever-cloud.com',
-      port: 3306,
-      username: 'uv0lgzccxmpx7yyt',
-      password: 'wzBvDMhWupTWDJk1KvP3',
-      database: 'bnorca3wrur2z3r9ujv2',
+      host: process.env.HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       autoLoadModels: true,
       synchronize: true,
       models: [
