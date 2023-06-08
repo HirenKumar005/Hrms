@@ -30,7 +30,7 @@ export class AddEmployeeDto {
   @ApiProperty({ example: 3, type: 'number', format: 'number', required: true })
   @IsNumber()
   @Type(() => Number)
-  @IsNotEmpty()
+  @IsOptional()
   reportTo: number;
 
   @ApiProperty({ example: 1, type: 'number', format: 'number', required: false })

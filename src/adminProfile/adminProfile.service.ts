@@ -56,15 +56,18 @@ export class AdminProfileService {
     }
 
     if (employee && Object.keys(employee).length > 0) {
-      const addedReportTo: any = await this.reportToModel
-        .create({
-          assignerId: dto.reportTo,
-          assigneeId: employee.id,
-        })
-        .catch((err) => {
-          error = err;
-        });
+      let addedReportTo : any = null;
 
+      if (dto.reportTo) {
+        addedReportTo = await this.reportToModel
+          .create({
+            assignerId: dto.reportTo,
+            assigneeId: employee.id,
+          })
+          .catch((err) => {
+            error = err;
+          });
+      }
       const employeeLeave: any = await this.leaveModel
         .create({
           addedBy: dto.userId,
@@ -89,7 +92,7 @@ export class AdminProfileService {
 
       if (
         addedReportTo &&
-        Object.keys(addedReportTo).length > 0 &&
+        Object.keys(addedReportTo).length > 0 ||
         employeeLeave &&
         Object.keys(employeeLeave).length > 0
       ) {
