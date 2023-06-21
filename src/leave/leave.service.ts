@@ -1,19 +1,20 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { Leave } from 'src/models/leave.model';
-import { LeaveUser } from 'src/models/leaveUser.model';
-import { AddLeaveDto } from './dto/addLeave.dto';
-import { LeaveApprovalDto } from './dto/leaveApproval.dto';
-import { HandleResponse } from '../services/handleResponse';
-import { Messages } from 'src/utils/constants/message';
-import { Users } from 'src/models/users.model';
+import { HttpStatus, Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/sequelize";
+import { Leave } from "src/models/leave.model";
+import { LeaveUser } from "src/models/leaveUser.model";
+import { AddLeaveDto } from "./dto/addLeave.dto";
+import { LeaveApprovalDto } from "./dto/leaveApproval.dto";
+import { HandleResponse } from "../services/handleResponse";
+import { Messages } from "src/utils/constants/message";
+import { Users } from "src/models/users.model";
+import { DeleteLeave } from "./dto/deleteLeave.dto";
 
 @Injectable()
 export class LeaveService {
   constructor(
     @InjectModel(Users) private userModel: typeof Users,
     @InjectModel(Leave) private leaveModel: typeof Leave,
-    @InjectModel(LeaveUser) private addLeaveModel: typeof LeaveUser,
+    @InjectModel(LeaveUser) private addLeaveModel: typeof LeaveUser
   ) {}
 
   async addLeave(dto: AddLeaveDto) {
@@ -39,7 +40,7 @@ export class LeaveService {
         {
           errorMessage: error.original.sqlMessage,
           field: error.fields,
-        },
+        }
       );
     }
 
@@ -48,7 +49,7 @@ export class LeaveService {
         HttpStatus.CONFLICT,
         Messages.DUPLICATE_RECORD,
         undefined,
-        undefined,
+        undefined
       );
     } else {
       const addLeaveByUser: any = await this.addLeaveModel
@@ -67,24 +68,22 @@ export class LeaveService {
           {
             errorMessage: error.original.sqlMessage,
             field: error.fields,
-          },
+          }
         );
       }
 
       if (addLeaveByUser && Object.keys(addLeaveByUser).length > 0) {
-        let message = (dto.leaveDays > 1) ? `The Leaves ${Messages.ADD_SUCCESS}` : `The Leave ${Messages.ADD_SUCCESS}`;
-        return HandleResponse(
-          HttpStatus.OK,
-          message,
-          undefined,
-          undefined,
-        );
+        let message =
+          dto.leaveDays > 1
+            ? `The Leaves ${Messages.ADD_SUCCESS}`
+            : `The Leave ${Messages.ADD_SUCCESS}`;
+        return HandleResponse(HttpStatus.OK, message, undefined, undefined);
       } else {
         return HandleResponse(
           HttpStatus.OK,
           Messages.NOT_FOUND,
           undefined,
-          undefined,
+          undefined
         );
       }
     }
@@ -96,19 +95,19 @@ export class LeaveService {
     const listOfApplicantsData: any = await this.addLeaveModel
       .findAll({
         attributes: [
-          'id',
-          'userId',
-          'leaveType',
-          'fromDate',
-          'toDate',
-          'leaveDays',
-          'reason',
-          'status',
+          "id",
+          "userId",
+          "leaveType",
+          "fromDate",
+          "toDate",
+          "leaveDays",
+          "reason",
+          "status",
         ],
         include: [
           {
             model: this.userModel,
-            attributes: ['firstName', 'lastName'],
+            attributes: ["firstName", "lastName"],
           },
         ],
       })
@@ -124,7 +123,7 @@ export class LeaveService {
         {
           errorMessage: error.original.sqlMessage,
           field: error.fields,
-        },
+        }
       );
     }
 
@@ -133,14 +132,14 @@ export class LeaveService {
         HttpStatus.OK,
         undefined,
         listOfApplicantsData,
-        undefined,
+        undefined
       );
     } else {
       return HandleResponse(
         HttpStatus.NOT_FOUND,
         Messages.NOT_FOUND,
         undefined,
-        undefined,
+        undefined
       );
     }
   }
@@ -149,7 +148,7 @@ export class LeaveService {
   async leaveApproval(dto: LeaveApprovalDto) {
     let error = null;
 
-    if (dto.status === 'Approve') {
+    if (dto.status === "Approve") {
       const leaveApprovalDetails: any = await this.addLeaveModel
         .update(
           {
@@ -163,7 +162,7 @@ export class LeaveService {
               id: dto.id,
               userId: dto.userId,
             },
-          },
+          }
         )
         .catch((err) => {
           error = err;
@@ -177,7 +176,7 @@ export class LeaveService {
           {
             errorMessage: error.original.sqlMessage,
             field: error.fields,
-          },
+          }
         );
       }
 
@@ -197,7 +196,7 @@ export class LeaveService {
           {
             errorMessage: error.original.sqlMessage,
             field: error.fields,
-          },
+          }
         );
       }
 
@@ -218,7 +217,7 @@ export class LeaveService {
                 assignTo: totalLeavesOfUser.dataValues.assignTo,
                 id: totalLeavesOfUser.dataValues.id,
               },
-            },
+            }
           )
           .catch((err) => {
             error = err;
@@ -232,7 +231,7 @@ export class LeaveService {
             {
               errorMessage: error.original.sqlMessage,
               field: error.fields,
-            },
+            }
           );
         }
 
@@ -240,17 +239,17 @@ export class LeaveService {
           HttpStatus.OK,
           `Leave approved and ${Messages.UPDATE_SUCCESS}`,
           undefined,
-          undefined,
+          undefined
         );
       } else {
         return HandleResponse(
           HttpStatus.NOT_FOUND,
           Messages.NOT_FOUND,
           undefined,
-          undefined,
+          undefined
         );
       }
-    } else if (dto.status === 'Reject') {
+    } else if (dto.status === "Reject") {
       const leaveApprovalDetails: any = await this.addLeaveModel
         .update(
           { status: dto.status, rejectReason: dto.reason, isDeleted: 1 },
@@ -259,7 +258,7 @@ export class LeaveService {
               id: dto.id,
               userId: dto.userId,
             },
-          },
+          }
         )
         .catch((err) => {
           error = err;
@@ -273,14 +272,14 @@ export class LeaveService {
           {
             errorMessage: error.original.sqlMessage,
             field: error.fields,
-          },
+          }
         );
       }
       return HandleResponse(
         HttpStatus.OK,
         `Leave rejected and ${Messages.UPDATE_SUCCESS}`,
         undefined,
-        undefined,
+        undefined
       );
     }
   }
@@ -291,16 +290,17 @@ export class LeaveService {
     const findLeaveDetails: any = await this.addLeaveModel
       .findAll({
         attributes: [
-          'id',
-          'fromDate',
-          'toDate',
-          'leaveDays',
-          'approvalDate',
-          'reason',
-          'status',
-          'leaveType',
+          "id",
+          "fromDate",
+          "toDate",
+          "leaveDays",
+          "approvalDate",
+          "reason",
+          "status",
+          "leaveType",
         ],
         where: {
+          isDeleted: false,
           userId: id,
         },
       })
@@ -316,7 +316,7 @@ export class LeaveService {
         {
           errorMessage: error.original.sqlMessage,
           field: error.fields,
-        },
+        }
       );
     }
 
@@ -325,14 +325,14 @@ export class LeaveService {
         HttpStatus.OK,
         undefined,
         findLeaveDetails,
-        undefined,
+        undefined
       );
     } else {
       return HandleResponse(
         HttpStatus.NOT_FOUND,
         Messages.NOT_FOUND,
         undefined,
-        undefined,
+        undefined
       );
     }
   }
@@ -343,19 +343,20 @@ export class LeaveService {
     const leaveHistoryOfEmployeesData: any = await this.addLeaveModel
       .findAll({
         attributes: [
-          'id',
-          'leaveType',
-          'fromDate',
-          'toDate',
-          'leaveDays',
-          'reason',
-          'status',
+          "id",
+          "leaveType",
+          "fromDate",
+          "toDate",
+          "leaveDays",
+          "reason",
+          "status",
         ],
+        where: { isDeleted: false },
         include: [
           {
             model: this.userModel,
-            attributes: ['firstName', 'lastName'],
-            where: { role: 'Employee' },
+            attributes: ["firstName", "lastName"],
+            where: { role: "Employee" },
           },
         ],
       })
@@ -371,7 +372,7 @@ export class LeaveService {
         {
           errorMessage: error.original.sqlMessage,
           field: error.fields,
-        },
+        }
       );
     }
 
@@ -380,14 +381,61 @@ export class LeaveService {
         HttpStatus.OK,
         undefined,
         leaveHistoryOfEmployeesData,
-        undefined,
+        undefined
       );
     } else {
       return HandleResponse(
         HttpStatus.NOT_FOUND,
         Messages.NOT_FOUND,
         undefined,
+        undefined
+      );
+    }
+  }
+
+  async deleteLeave(dto: DeleteLeave) {
+    let error = null;
+
+    const deleteLeave: any = await this.addLeaveModel
+      .update(
+        { isDeleted: dto.isDeleted },
+        {
+          where: {
+            id: dto.id,
+          },
+        }
+      )
+      .catch((err) => {
+        error = err;
+      });
+
+    if (error) {
+      return HandleResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${Messages.FAILED_TO} delete leave.`,
         undefined,
+        {
+          errorMessage: error.original.sqlMessage,
+          field: error.fields,
+        }
+      );
+    }
+
+    const [dataValues]: any = deleteLeave;
+
+    if (dataValues === 1) {
+      return HandleResponse(
+        HttpStatus.OK,
+        `Leave is ${Messages.DELETE_SUCCESS}`,
+        undefined,
+        undefined
+      );
+    } else {
+      return HandleResponse(
+        HttpStatus.NOT_FOUND,
+        Messages.NOT_FOUND,
+        undefined,
+        undefined
       );
     }
   }
