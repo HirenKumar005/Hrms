@@ -17,6 +17,7 @@ import { JwtGuard } from 'src/services/auth/guard/jwt.guard';
 import { RolesGuard } from 'src/services/auth/guard/roles.guard';
 import { Role } from 'src/utils/constants/roles';
 import { LeaveApprovalDto } from './dto/leaveApproval.dto';
+import { DeleteLeave } from './dto/deleteLeave.dto';
 
 @Controller('api')
 export class LeaveController {
@@ -67,5 +68,13 @@ export class LeaveController {
   @Get('hr/leaveHistoryOfEmployees')
   leaveHistoryOfEmployees() {
     return this.leaveService.leaveHistoryOfEmployees();
+  }
+
+  @Roles(Role.HR, Role.Employee)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @Put('deleteLeave')
+  DeleteLeave(@Body() dto: DeleteLeave) {
+    return this.leaveService.deleteLeave(dto);
   }
 }
