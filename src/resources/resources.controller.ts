@@ -42,13 +42,22 @@ export class ResourcesController {
     return this.resourcesService.resourcesAllocation(dto);
   }
 
-  @Roles(Role.HR)
+  @Roles(Role.HR, Role.Employee, Role.Admin)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Post('hr/resources/findDevices')
   findDevices(@Body() dto: FindAllocateDevice) {
     return this.resourcesService.findDevices(dto);
+  }
+
+   @Roles(Role.HR, Role.Employee, Role.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Post('hr/resources/findDevicesNumber')
+  findDevicesNumber(@Body() dto: FindAllocateDevice) {
+    return this.resourcesService.findDevicesNumber(dto);
   }
 
   @Roles(Role.HR)

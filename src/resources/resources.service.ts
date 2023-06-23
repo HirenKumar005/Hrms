@@ -204,6 +204,47 @@ export class ResourcesService {
     }
   }
 
+  async findDevicesNumber(dto: FindAllocateDevice) {
+    let error = null;
+
+    const resourcesAllocationData = await this.resourcesModel
+    .findAll({
+      attributes: ['id','resourceName', 'resourceNo'],
+      where: dto.resourceName ? { resourceName: dto.resourceName } : {isDeleted: 0}
+    })
+    .catch((err) => {
+      error = err;
+    });
+
+    if (error) {
+      return HandleResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${Messages.FAILED_TO} add resources number.`,
+        undefined,
+        {
+          errorMessage: error.original.sqlMessage,
+          field: error.fields,
+        },
+      );
+    }
+
+    if (resourcesAllocationData && resourcesAllocationData.length > 0) {
+      return HandleResponse(
+        HttpStatus.OK,
+        undefined,
+        resourcesAllocationData,
+        undefined,
+      );
+    } else {
+      return HandleResponse(
+        HttpStatus.NOT_FOUND,
+        Messages.NOT_FOUND,
+        undefined,
+        undefined,
+      );
+    }
+  }
+
   async listOfResources(id: number) {
     let error = null;
 
