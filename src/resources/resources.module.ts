@@ -9,6 +9,7 @@ import { JwtGuard } from 'src/services/auth/guard/jwt.guard';
 import { JwtStrategy } from 'src/services/auth/strategy/jwt.strategy';
 import { ResourcesController } from './resources.controller';
 import { ResourcesService } from './resources.service';
+import { Configuration } from 'src/models/configuration.model';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ResourcesService } from './resources.service';
       ResourcesDetails,
       Users,
       DamagedResources,
+      Configuration
     ]),
     JwtModule.register({
       secret: process.env.JWTSecretKey,

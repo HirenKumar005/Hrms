@@ -51,7 +51,7 @@ export class ResourcesController {
     return this.resourcesService.findDevices(dto);
   }
 
-   @Roles(Role.HR, Role.Employee, Role.Admin)
+  @Roles(Role.HR, Role.Employee, Role.Admin)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)

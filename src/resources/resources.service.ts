@@ -12,7 +12,8 @@ import { ResourcesAllocation } from './dto/resourcesAllocation.dto';
 import { Users } from 'src/models/users.model';
 import { Op } from 'sequelize';
 import * as Moment from 'moment';
-
+import { Configuration } from 'src/models/configuration.model';
+ 
 @Injectable()
 export class ResourcesService {
   constructor(
@@ -23,6 +24,8 @@ export class ResourcesService {
     private userModel: typeof Users,
     @InjectModel(DamagedResources)
     private damagedResourcesModel: typeof DamagedResources,
+    @InjectModel(Configuration)
+    private configurationModel: typeof Configuration,
   ) {}
 
   async addResources(dto: AddResources) {
@@ -210,7 +213,14 @@ export class ResourcesService {
     const resourcesAllocationData = await this.resourcesModel
     .findAll({
       attributes: ['id','resourceName', 'resourceNo'],
-      where: dto.resourceName ? { resourceName: dto.resourceName } : {isDeleted: 0}
+      where: dto.resourceName ? { resourceName: dto.resourceName } : {isDeleted: 0},
+      include: [
+        {
+          model: this.configurationModel,
+          attributes: ['id'],
+          where: {isDeleted: 0},
+        },
+      ],
     })
     .catch((err) => {
       error = err;
