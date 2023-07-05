@@ -29,17 +29,17 @@ export class SupportIssues extends Model {
   @BeforeInsert()
   insertCreated() {
     this.created_at = new Date(
-      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
     );
     this.updated_at = new Date(
-      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
     );
   }
 
   @BeforeUpdate()
   insertUpdated() {
     this.updated_at = new Date(
-      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
     );
   }
 

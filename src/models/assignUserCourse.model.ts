@@ -39,17 +39,17 @@ export class AssignUserCourse extends Model {
   @BeforeInsert()
   insertCreated() {
     this.created_at = new Date(
-      Moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      Moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
     );
     this.updated_at = new Date(
-      Moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      Moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
     );
   }
 
   @BeforeUpdate()
   insertUpdated() {
     this.updated_at = new Date(
-      Moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      Moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
     );
   }
 
@@ -58,4 +58,4 @@ export class AssignUserCourse extends Model {
 
   @BelongsTo(() => Course)
   course: Course;
-};
+}

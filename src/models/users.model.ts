@@ -4,12 +4,9 @@ import {
   Column,
   Model,
   Table,
-  CreatedAt,
-  UpdatedAt,
   AutoIncrement,
   PrimaryKey,
   Unique,
-  Default,
   ForeignKey,
   BelongsTo,
   AllowNull,
@@ -25,7 +22,6 @@ import { EducationDetails } from './educationDetails.model';
 import { ReportTo } from './reportTo.model';
 import {
   CreateDateColumn,
-  UpdateDateColumn,
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
