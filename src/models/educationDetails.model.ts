@@ -3,17 +3,15 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
-  CreatedAt,
   Default,
   ForeignKey,
   Model,
   PrimaryKey,
   Table,
-  UpdatedAt,
 } from 'sequelize-typescript';
 import { Users } from './users.model';
-import * as moment from 'moment';
 import { Qualification } from './qualification.model';
+import { Sequelize } from 'sequelize';
 
 @Table
 export class EducationDetails extends Model {
@@ -40,15 +38,13 @@ export class EducationDetails extends Model {
   @Column
   passingYear: number;
 
-  @Default(moment().format('YYYY-MM-DD h:mm:ss'))
-  @CreatedAt
-  @Column
-  createdAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  createdAt: Date;
 
-  @Default(moment().format('YYYY-MM-DD h:mm:ss'))
-  @UpdatedAt
-  @Column
-  updatedAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  updatedAt: Date;
 
   @Column({ defaultValue: 0 })
   isDeleted: boolean;

@@ -1,22 +1,19 @@
-import { DataTypes } from 'sequelize';
-import * as moment from 'moment';
+import { DataTypes, Sequelize } from "sequelize";
 import {
   Column,
   Model,
   Table,
-  CreatedAt,
-  UpdatedAt,
   AutoIncrement,
   PrimaryKey,
   Default,
   ForeignKey,
   BelongsTo,
   AllowNull,
-} from 'sequelize-typescript';
-import { City } from './city.model';
-import { State } from './state.model';
-import { Country } from './country.model';
-import { Users } from './users.model';
+} from "sequelize-typescript";
+import { City } from "./city.model";
+import { State } from "./state.model";
+import { Country } from "./country.model";
+import { Users } from "./users.model";
 
 @Table
 export class Address extends Model {
@@ -53,15 +50,13 @@ export class Address extends Model {
   @Column
   countryId: number;
 
-  @Default(moment().format('YYYY-MM-DD h:mm:ss'))
-  @CreatedAt
-  @Column
-  createdAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  createdAt: Date;
 
-  @Default(moment().format('YYYY-MM-DD h:mm:ss'))
-  @UpdatedAt
-  @Column
-  updatedAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  updatedAt: Date;
 
   @Column({ defaultValue: 0 })
   isDeleted: boolean;
