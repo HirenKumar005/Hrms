@@ -71,7 +71,7 @@ class UserDto {
     example: '1995-07-22',
     type: 'string',
     format: 'Date',
-    required: false
+    required: false,
   })
   @IsString()
   @IsOptional()
@@ -206,10 +206,17 @@ class EmergencyContactDto {
   primaryContactNo: string;
 
   @ApiProperty({
-    example: 'Father',
+    enum: ['Mother', 'Father', 'Brother', 'Sister', 'Husband', 'Wife'],
     type: 'string',
-    format: 'string',
-    required: false,
+    required: true,
+  })
+  @IsEnum({
+    Mother: 'Mother',
+    Father: 'Father',
+    Brother: 'Brother',
+    Sister: 'Sister',
+    Husband: 'Husband',
+    Wife: 'Wife',
   })
   @IsString()
   @IsOptional()
@@ -237,10 +244,17 @@ class EmergencyContactDto {
   secondaryContactNo: string;
 
   @ApiProperty({
-    example: 'Mother',
+    enum: ['Mother', 'Father', 'Brother', 'Sister', 'Husband', 'Wife'],
     type: 'string',
-    format: 'string',
-    required: false,
+    required: true,
+  })
+  @IsEnum({
+    Mother: 'Mother',
+    Father: 'Father',
+    Brother: 'Brother',
+    Sister: 'Sister',
+    Husband: 'Husband',
+    Wife: 'Wife',
   })
   @IsString()
   @IsOptional()

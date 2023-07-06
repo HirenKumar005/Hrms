@@ -11,7 +11,7 @@ import {
   Default,
   AllowNull,
   ForeignKey,
-  BelongsTo
+  BelongsTo,
 } from 'sequelize-typescript';
 import { Resources } from './resources.model';
 import { Users } from './users.model';
@@ -20,7 +20,7 @@ import { Users } from './users.model';
 export class Configuration extends Model {
   @PrimaryKey
   @AutoIncrement
-  @Column   
+  @Column
   id: number;
 
   @ForeignKey(() => Resources)
@@ -39,7 +39,7 @@ export class Configuration extends Model {
 
   @Column
   modelName: string;
-  
+
   @AllowNull(false)
   @Column
   serialNo: string;
@@ -69,7 +69,9 @@ export class Configuration extends Model {
   warrantyEndDate: Date;
 
   @AllowNull(false)
-  @Column
+  @Column({
+    type: DataTypes.ENUM('Mahi Enterprise', 'WIPTECH PERIPHERALS PVT LTD'),
+  })
   vendor: string;
 
   @AllowNull(false)
@@ -91,7 +93,7 @@ export class Configuration extends Model {
 
   @BelongsTo(() => Users)
   users: Users[];
-  
+
   @BelongsTo(() => Resources)
   resources: Resources;
 };

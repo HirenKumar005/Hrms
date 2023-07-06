@@ -13,6 +13,7 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript';
 import { Users } from './users.model';
+import { DataTypes } from 'sequelize';
 
 @Table
 export class EmergencyContact extends Model {
@@ -35,7 +36,16 @@ export class EmergencyContact extends Model {
   primaryContactNo: string;
 
   @AllowNull(false)
-  @Column
+  @Column({
+    type: DataTypes.ENUM(
+      'Mother',
+      'Father',
+      'Brother',
+      'Sister',
+      'Husband',
+      'Wife'
+    ),
+  })
   primaryRelation: string;
 
   @AllowNull(false)
@@ -47,7 +57,16 @@ export class EmergencyContact extends Model {
   secondaryContactNo: string;
 
   @AllowNull(false)
-  @Column
+  @Column({
+    type: DataTypes.ENUM(
+      'Mother',
+      'Father',
+      'Brother',
+      'Sister',
+      'Husband',
+      'Wife'
+    ),
+  })
   secondaryRelation: string;
 
   @Default(moment().format('YYYY-MM-DD h:mm:ss'))
