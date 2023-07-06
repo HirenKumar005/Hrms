@@ -1,11 +1,8 @@
-import { DataTypes } from 'sequelize';
-import * as Moment from 'moment';
+import { DataTypes, Sequelize } from 'sequelize';
 import {
   Column,
   Model,
   Table,
-  CreatedAt,
-  UpdatedAt,
   AutoIncrement,
   PrimaryKey,
   Default,
@@ -32,15 +29,13 @@ export class Position extends Model {
   })
   position: string;
 
-  @Default(Moment().format('YYYY-MM-DD h:mm:ss'))
-  @CreatedAt
-  @Column
-  createdAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  createdAt: Date;
 
-  @Default(Moment().format('YYYY-MM-DD h:mm:ss'))
-  @UpdatedAt
-  @Column
-  updatedAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  updatedAt: Date;
     
   @HasMany(() => Users, { foreignKey: 'positionId' })
   user: Users;

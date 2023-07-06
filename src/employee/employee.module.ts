@@ -1,5 +1,4 @@
 import { EmployeeService } from './employee.service';
-
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { BankDetails } from 'src/models/bankDetails.model';

@@ -1,11 +1,8 @@
-import { DataTypes } from 'sequelize';
-import * as Moment from 'moment';
+import { DataTypes, Sequelize } from 'sequelize';
 import {
   Column,
   Model,
   Table,
-  CreatedAt,
-  UpdatedAt,
   AutoIncrement,
   PrimaryKey,
   Default,
@@ -64,15 +61,13 @@ export class LeaveUser extends Model {
   @Column({ type: DataTypes.ENUM('Full', 'Half', 'WFH') })
   leaveType: string;
 
-  @Default(Moment().format('YYYY-MM-DD h:mm:ss'))
-  @CreatedAt
-  @Column
-  createdAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  createdAt: Date;
 
-  @Default(Moment().format('YYYY-MM-DD h:mm:ss'))
-  @UpdatedAt
-  @Column
-  updatedAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  updatedAt: Date;
 
   @Column({ defaultValue: false })
   isDeleted: boolean;

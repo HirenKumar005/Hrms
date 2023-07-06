@@ -1,5 +1,4 @@
-import { DataTypes } from 'sequelize';
-import * as moment from 'moment-timezone';
+import { DataTypes, Sequelize } from 'sequelize';
 import {
   Column,
   Model,
@@ -11,6 +10,7 @@ import {
   BelongsTo,
   AllowNull,
   HasMany,
+  Default,
 } from 'sequelize-typescript';
 import { Designation } from './designation.model';
 import { Position } from './position.model';
@@ -20,7 +20,6 @@ import { EmergencyContact } from './emergencyContact.model';
 import { BankDetails } from './bankDetails.model';
 import { EducationDetails } from './educationDetails.model';
 import { ReportTo } from './reportTo.model';
-import { CreateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { Support } from './support.model';
 
 @Table
@@ -93,28 +92,13 @@ export class Users extends Model {
   @Column
   personalEmail: string;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  createdAt: Date;
 
-  @CreateDateColumn()
-  updated_at: Date;
-
-  @BeforeInsert()
-  insertCreated() {
-    this.created_at = new Date(
-      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
-    );
-    this.updated_at = new Date(
-      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
-    );
-  }
-
-  @BeforeUpdate()
-  insertUpdated() {
-    this.updated_at = new Date(
-      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
-    );
-  }
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  updatedAt: Date;
 
   @Column({ defaultValue: 0 })
   isDeleted: boolean;

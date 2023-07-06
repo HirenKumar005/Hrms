@@ -2,17 +2,15 @@ import {
   AllowNull,
   AutoIncrement,
   Column,
-  CreatedAt,
   Default,
   HasMany,
   Model,
   PrimaryKey,
   Table,
-  UpdatedAt,
 } from 'sequelize-typescript';
-import * as moment from 'moment';
 import { EducationDetails } from './educationDetails.model';
 import { Recruitment } from './recruitment.model';
+import { Sequelize } from 'sequelize';
 
 @Table
 export class Qualification extends Model {
@@ -25,15 +23,13 @@ export class Qualification extends Model {
   @Column
   qualification: string;
 
-  @Default(moment().format('YYYY-MM-DD h:mm:ss'))
-  @CreatedAt
-  @Column
-  createdAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  createdAt: Date;
 
-  @Default(moment().format('YYYY-MM-DD h:mm:ss'))
-  @UpdatedAt
-  @Column
-  updatedAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  updatedAt: Date;
 
   @HasMany(() => EducationDetails, { foreignKey: 'qualificationId' })
   educationDetails: EducationDetails;
