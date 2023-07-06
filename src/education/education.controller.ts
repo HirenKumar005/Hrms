@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiConsumes, ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { Roles } from 'src/services/auth/decorators/roles.decorator';
 import { JwtGuard } from 'src/services/auth/guard/jwt.guard';
 import { RolesGuard } from 'src/services/auth/guard/roles.guard';

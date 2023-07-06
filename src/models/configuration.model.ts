@@ -1,17 +1,14 @@
-import * as Moment from 'moment';
-import { DataTypes } from 'sequelize';
+import { DataTypes, Sequelize } from 'sequelize';
 import {
   Column,
   Model,
   Table,
-  CreatedAt,
-  UpdatedAt,
   AutoIncrement,
   PrimaryKey,
   Default,
   AllowNull,
   ForeignKey,
-  BelongsTo
+  BelongsTo,
 } from 'sequelize-typescript';
 import { Resources } from './resources.model';
 import { Users } from './users.model';
@@ -20,7 +17,7 @@ import { Users } from './users.model';
 export class Configuration extends Model {
   @PrimaryKey
   @AutoIncrement
-  @Column   
+  @Column
   id: number;
 
   @ForeignKey(() => Resources)
@@ -39,7 +36,7 @@ export class Configuration extends Model {
 
   @Column
   modelName: string;
-  
+
   @AllowNull(false)
   @Column
   serialNo: string;
@@ -69,29 +66,29 @@ export class Configuration extends Model {
   warrantyEndDate: Date;
 
   @AllowNull(false)
-  @Column
+  @Column({
+    type: DataTypes.ENUM('Mahi Enterprise', 'WIPTECH PERIPHERALS PVT LTD'),
+  })
   vendor: string;
 
   @AllowNull(false)
   @Column({ type: DataTypes.DATEONLY })
   purchaseDate: Date;
 
-  @Default(Moment().format('YYYY-MM-DD h:mm:ss'))
-  @CreatedAt
-  @Column
-  createdAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  createdAt: Date;
 
-  @Default(Moment().format('YYYY-MM-DD h:mm:ss'))
-  @UpdatedAt
-  @Column
-  updatedAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  updatedAt: Date;
 
   @Column({ defaultValue: 0 })
   isDeleted: boolean;
 
   @BelongsTo(() => Users)
   users: Users[];
-  
+
   @BelongsTo(() => Resources)
   resources: Resources;
 };
