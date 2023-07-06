@@ -1,19 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-    IsNumber,
-    IsOptional,
-    IsString,
-} from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class EditConfigurationDto {
-  @ApiProperty({ example: 1, type: 'number', format: 'number', required: false })
+  @ApiProperty({
+    example: 1,
+    type: 'number',
+    format: 'number',
+    required: false,
+  })
   @IsNumber()
   @Type(() => Number)
   @IsOptional()
   resourceId: number;
-  
-  @ApiProperty({ example: 1, type: 'number', format: 'number', required: false })
+
+  @ApiProperty({
+    example: 1,
+    type: 'number',
+    format: 'number',
+    required: false,
+  })
   @IsNumber()
   @Type(() => Number)
   @IsOptional()
@@ -40,10 +46,13 @@ export class EditConfigurationDto {
   serialNo: string;
 
   @ApiProperty({
-    example: 'Ravi',
+    enum: ['Mahi Enterprise', 'WIPTECH PERIPHERALS PVT LTD'],
     type: 'string',
-    format: 'string',
-    required: false,
+    required: true,
+  })
+  @IsEnum({
+    Mahi_Enterprise: 'Mahi Enterprise',
+    Wiptech_Peripherals_Pvt_Ltd: 'WIPTECH PERIPHERALS PVT LTD',
   })
   @IsString()
   @IsOptional()
@@ -68,7 +77,7 @@ export class EditConfigurationDto {
   @IsString()
   @IsOptional()
   modelName: string;
-  
+
   @ApiProperty({
     example: 'i3 processor',
     type: 'string',
@@ -78,7 +87,7 @@ export class EditConfigurationDto {
   @IsString()
   @IsOptional()
   processor: string;
-  
+
   @ApiProperty({
     example: '5GB',
     type: 'string',
@@ -88,7 +97,7 @@ export class EditConfigurationDto {
   @IsString()
   @IsOptional()
   RAM: string;
-  
+
   @ApiProperty({
     example: 'SSD',
     type: 'string',
@@ -98,7 +107,7 @@ export class EditConfigurationDto {
   @IsString()
   @IsOptional()
   storageType: string;
-  
+
   @ApiProperty({
     example: 'Window',
     type: 'string',
@@ -108,7 +117,7 @@ export class EditConfigurationDto {
   @IsString()
   @IsOptional()
   osType: string;
-  
+
   @ApiProperty({
     example: '10',
     type: 'string',
@@ -118,7 +127,7 @@ export class EditConfigurationDto {
   @IsString()
   @IsOptional()
   osVersion: string;
-  
+
   @ApiProperty({
     example: '2GB',
     type: 'string',
@@ -128,7 +137,7 @@ export class EditConfigurationDto {
   @IsString()
   @IsOptional()
   graphicsCard: string;
-  
+
   @ApiProperty({
     example: '2021-11-08',
     type: 'string',
@@ -138,7 +147,7 @@ export class EditConfigurationDto {
   @IsString()
   @IsOptional()
   warrantyStartDate: Date;
-  
+
   @ApiProperty({
     example: '2023-11-08',
     type: 'string',
