@@ -57,3 +57,11 @@ export function Filter(
     value,
   };
 };
+
+export function UpdateDuration(data: any, data2: any[]) {
+  let total = data;
+  for (let item in data2) {
+    total += data2[item];
+  }
+  return total;
+}
