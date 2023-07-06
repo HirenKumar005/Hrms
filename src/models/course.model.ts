@@ -1,10 +1,7 @@
-import * as Moment from 'moment';
 import {
   Column,
   Model,
   Table,
-  CreatedAt,
-  UpdatedAt,
   AutoIncrement,
   PrimaryKey,
   Default,
@@ -15,6 +12,7 @@ import {
 import { Users } from './users.model';
 import { Topic } from './topic.model';
 import { AssignUserCourse } from './assignUserCourse.model';
+import { Sequelize } from 'sequelize';
 
 @Table
 export class Course extends Model {
@@ -35,15 +33,13 @@ export class Course extends Model {
   @Column({ defaultValue: 0 })
   duration: number;
 
-  @Default(Moment().format('YYYY-MM-DD h:mm:ss'))
-  @CreatedAt
-  @Column
-  createdAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  createdAt: Date;
 
-  @Default(Moment().format('YYYY-MM-DD h:mm:ss'))
-  @UpdatedAt
-  @Column
-  updatedAt: string;
+  @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+  @Column({ type: "TIMESTAMP" })
+  updatedAt: Date;
 
   @Column({ defaultValue: false })
   isDeleted: boolean;
