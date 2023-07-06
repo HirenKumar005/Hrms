@@ -4,12 +4,9 @@ import {
   Column,
   Model,
   Table,
-  CreatedAt,
-  UpdatedAt,
   AutoIncrement,
   PrimaryKey,
   Unique,
-  Default,
   ForeignKey,
   BelongsTo,
   AllowNull,
@@ -23,12 +20,7 @@ import { EmergencyContact } from './emergencyContact.model';
 import { BankDetails } from './bankDetails.model';
 import { EducationDetails } from './educationDetails.model';
 import { ReportTo } from './reportTo.model';
-import {
-  CreateDateColumn,
-  UpdateDateColumn,
-  BeforeInsert,
-  BeforeUpdate,
-} from 'typeorm';
+import { CreateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { Support } from './support.model';
 
 @Table
@@ -110,17 +102,17 @@ export class Users extends Model {
   @BeforeInsert()
   insertCreated() {
     this.created_at = new Date(
-      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
     );
     this.updated_at = new Date(
-      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
     );
   }
 
   @BeforeUpdate()
   insertUpdated() {
     this.updated_at = new Date(
-      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss'),
+      moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss')
     );
   }
 
@@ -152,5 +144,5 @@ export class Users extends Model {
   reportTo: ReportTo;
 
   @HasMany(() => Support)
-  support: Support[]
+  support: Support[];
 }
