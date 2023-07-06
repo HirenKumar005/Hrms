@@ -37,6 +37,7 @@ export class City extends Model {
   @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
   @Column({ type: "TIMESTAMP" })
   updatedAt: Date;
+  
   @Column({ defaultValue: 0 })
   isDeleted: boolean;
 

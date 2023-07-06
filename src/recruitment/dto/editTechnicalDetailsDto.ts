@@ -18,7 +18,7 @@ export class EditTechnicalDetailsDto {
     example: '4',
     type: 'string',
     format: 'string',
-    required: true
+    required: true,
   })
   @IsString()
   @IsNotEmpty()
@@ -28,7 +28,7 @@ export class EditTechnicalDetailsDto {
     example: '4',
     type: 'string',
     format: 'string',
-    required: true
+    required: true,
   })
   @IsString()
   @IsNotEmpty()
@@ -38,7 +38,7 @@ export class EditTechnicalDetailsDto {
     example: '4',
     type: 'string',
     format: 'string',
-    required: true
+    required: true,
   })
   @IsString()
   @IsNotEmpty()
@@ -48,7 +48,7 @@ export class EditTechnicalDetailsDto {
     example: 'xyz afv',
     type: 'string',
     format: 'string',
-    required: true
+    required: true,
   })
   @IsString()
   @IsNotEmpty()
@@ -58,12 +58,12 @@ export class EditTechnicalDetailsDto {
     example: 'Rejected',
     type: 'string',
     format: 'string',
-    required: true
+    required: true,
   })
   @IsEnum({
     Pending: 'Pending',
     Selected: 'Selected',
-    Rejected: 'Rejected'
+    Rejected: 'Rejected',
   })
   @IsString()
   @IsNotEmpty()

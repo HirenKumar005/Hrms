@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize } from "sequelize";
+import { DataTypes, Sequelize } from 'sequelize';
 import {
   Column,
   Model,
@@ -9,11 +9,11 @@ import {
   ForeignKey,
   BelongsTo,
   AllowNull,
-} from "sequelize-typescript";
-import { City } from "./city.model";
-import { State } from "./state.model";
-import { Country } from "./country.model";
-import { Users } from "./users.model";
+} from 'sequelize-typescript';
+import { City } from './city.model';
+import { State } from './state.model';
+import { Country } from './country.model';
+import { Users } from './users.model';
 
 @Table
 export class Address extends Model {
@@ -50,12 +50,12 @@ export class Address extends Model {
   @Column
   countryId: number;
 
-  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
-  @Column({ type: "TIMESTAMP" })
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
+  @Column({ type: 'TIMESTAMP' })
   createdAt: Date;
 
-  @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
-  @Column({ type: "TIMESTAMP" })
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
+  @Column({ type: 'TIMESTAMP' })
   updatedAt: Date;
 
   @Column({ defaultValue: 0 })

@@ -37,4 +37,5 @@ export class UserCourse extends Model {
 
   @HasMany(() => AssignUserCourse)
   assignUserCourse: AssignUserCourse[]
+  
 }

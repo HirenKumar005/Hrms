@@ -7,7 +7,7 @@ import {
   PrimaryKey,
   Default,
   AllowNull,
-  HasMany
+  HasMany,
 } from 'sequelize-typescript';
 import { Users } from './users.model';
 

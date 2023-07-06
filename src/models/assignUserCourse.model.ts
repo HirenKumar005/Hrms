@@ -43,4 +43,4 @@ export class AssignUserCourse extends Model {
 
   @BelongsTo(() => Course)
   course: Course;
-}
+};
