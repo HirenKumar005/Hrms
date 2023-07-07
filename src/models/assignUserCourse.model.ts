@@ -30,12 +30,12 @@ export class AssignUserCourse extends Model {
   @Column
   courseId: number;
 
-  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
-  @Column({ type: "TIMESTAMP" })
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
+  @Column({ type: 'TIMESTAMP' })
   createdAt: Date;
 
-  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
-  @Column({ type: "TIMESTAMP" , defaultValue:  Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')})
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
+  @Column({ type: 'TIMESTAMP' , defaultValue:  Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')})
   updatedAt: Date;
 
   @Column({ defaultValue: false })

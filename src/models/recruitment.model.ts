@@ -76,12 +76,12 @@ export class Recruitment extends Model {
   @Column({ type: DataTypes.ENUM('Selected', 'Rejected') })
   status: string;
 
-  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
-  @Column({ type: "TIMESTAMP" })
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
+  @Column({ type: 'TIMESTAMP' })
   createdAt: Date;
 
-  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
-  @Column({ type: "TIMESTAMP" , defaultValue:  Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')})
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
+  @Column({ type: 'TIMESTAMP' , defaultValue:  Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')})
   updatedAt: Date;
 
   @Column({ defaultValue: 0 })
