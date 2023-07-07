@@ -128,5 +128,5 @@ export class Users extends Model {
   reportTo: ReportTo;
 
   @HasMany(() => Support)
-  support: Support[]
+  support: Support[];
 }
