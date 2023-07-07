@@ -43,6 +43,7 @@ export class Topic extends Model {
   @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
   @Column({ type: 'TIMESTAMP' , defaultValue:  Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')})
   updatedAt: Date;
+  
   @Column({ defaultValue: false })
   isDeleted: boolean;
 
