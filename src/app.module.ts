@@ -71,7 +71,6 @@ import { SupportIssues } from './models/supportIssue.model';
       database: process.env.DB_NAME,
       autoLoadModels: true,
       synchronize: true,
-      define: { timestamps: false },
       models: [
         Users,
         Designation,

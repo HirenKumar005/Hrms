@@ -15,7 +15,7 @@ export class EditTechnicalDetailsDto {
   id: number;
 
   @ApiProperty({
-    example: '4',
+    example: '2',
     type: 'string',
     format: 'string',
     required: true,
@@ -25,7 +25,7 @@ export class EditTechnicalDetailsDto {
   english: string;
 
   @ApiProperty({
-    example: '4',
+    example: '2',
     type: 'string',
     format: 'string',
     required: true,
@@ -35,7 +35,7 @@ export class EditTechnicalDetailsDto {
   communication: string;
 
   @ApiProperty({
-    example: '4',
+    example: '2',
     type: 'string',
     format: 'string',
     required: true,

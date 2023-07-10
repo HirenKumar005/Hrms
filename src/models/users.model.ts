@@ -92,12 +92,12 @@ export class Users extends Model {
   @Column
   personalEmail: string;
 
-  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
-  @Column({ type: "TIMESTAMP" })
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
+  @Column({ type: 'TIMESTAMP' })
   createdAt: Date;
 
-  @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
-  @Column({ type: "TIMESTAMP" })
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
+  @Column({ type: 'TIMESTAMP' , defaultValue:  Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')})
   updatedAt: Date;
 
   @Column({ defaultValue: 0 })
@@ -128,5 +128,5 @@ export class Users extends Model {
   reportTo: ReportTo;
 
   @HasMany(() => Support)
-  support: Support[]
+  support: Support[];
 }
