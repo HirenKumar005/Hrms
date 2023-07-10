@@ -87,14 +87,6 @@ export class ItpService {
       }
 
       if (topic && Object.keys(topic).length > 0) {
-        // let updateDuration = (data: any, data2: any[]) => {
-        //   let total = data;
-        //   for (let item in data2) {
-        //     total += data2[item];
-        //   }
-        //   return total;
-        // };
-
         let hour: any = dto.topic.map((item) => item.hour);
 
         const updateOfCourseDuration: any = await this.courseModel
@@ -102,12 +94,12 @@ export class ItpService {
             {
               duration: UpdateDuration(
                 detailsOfCourse.dataValues.duration,
-                hour,
+                hour
               ),
             },
             {
               where: { id: course.dataValues.id },
-            },
+            }
           )
           .catch((err) => {
             error = err;
@@ -121,7 +113,7 @@ export class ItpService {
             {
               errorMessage: error.original.sqlMessage,
               field: error.fields,
-            },
+            }
           );
         }
 
@@ -132,14 +124,14 @@ export class ItpService {
             HttpStatus.OK,
             `Topic ${Messages.ADD_SUCCESS}`,
             undefined,
-            undefined,
+            undefined
           );
         } else {
           return HandleResponse(
             HttpStatus.NOT_FOUND,
             `Duration is ${Messages.UPDATE_FAILED}`,
             undefined,
-            undefined,
+            undefined
           );
         }
       } else {
@@ -160,14 +152,14 @@ export class ItpService {
             {
               errorMessage: error.original.sqlMessage,
               field: error.fields,
-            },
+            }
           );
         }
         return HandleResponse(
           HttpStatus.NOT_FOUND,
           `Topic ${Messages.NOT_FOUND}`,
           undefined,
-          undefined,
+          undefined
         );
       }
     } else {

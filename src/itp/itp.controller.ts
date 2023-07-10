@@ -25,49 +25,49 @@ import { FindAssignCourse } from './dto/findUserCourseAssign.dto';
 export class ItpController {
   constructor(private itpService: ItpService) {}
 
-  // @Roles(Role.Admin, Role.HR)
-  // @UseGuards(JwtGuard, RolesGuard)
-  // @ApiBearerAuth()
+  @Roles(Role.Admin, Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Post('/addCourse')
   addCourse(@Body() dto: TopicDto) {
     return this.itpService.addCourse(dto);
   }
 
-  // @Roles(Role.Admin, Role.HR)
-  // @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.Admin, Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @Put('/updateTopic')
   updateTopic(@Body() dto: UpdateTopicDto) {
     return this.itpService.updateTopic(dto);
   }
 
-  // @Roles(Role.Admin, Role.HR)
-  // @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.Admin, Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @Put('/deleteCourse')
   deleteCourse(@Body() dto: DeleteCourse) {
     return this.itpService.updateCourse(dto);
   }
 
-  // @Roles(Role.Admin, Role.HR)
-  // @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.Admin, Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @Put('/deleteTopic')
   deleteTopic(@Body() dto: DeleteTopic) {
     return this.itpService.deleteTopic(dto);
   }
 
-  // @Roles(Role.Admin, Role.HR)
-  // @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.Admin, Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @Post('/listOfTopics')
   findTopic(@Body() dto: IdValidationDto) {
     return this.itpService.findTopic(dto);
   }
 
-  // @Roles(Role.Admin, Role.HR)
-  // @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.Admin, Role.HR)
+  @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Post('/assignCourse')
