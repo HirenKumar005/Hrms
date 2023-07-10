@@ -23,12 +23,12 @@ export class Qualification extends Model {
   @Column
   qualification: string;
 
-  @Default(Sequelize.literal("CURRENT_TIMESTAMP"))
-  @Column({ type: "TIMESTAMP" })
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
+  @Column({ type: 'TIMESTAMP' })
   createdAt: Date;
 
-  @Default(Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
-  @Column({ type: "TIMESTAMP" })
+  @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
+  @Column({ type: 'TIMESTAMP' , defaultValue:  Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')})
   updatedAt: Date;
 
   @HasMany(() => EducationDetails, { foreignKey: 'qualificationId' })
