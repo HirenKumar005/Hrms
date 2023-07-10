@@ -565,7 +565,7 @@ export class ItpService {
       for (let item of topicData) {
         let [dataValue] = item.dataValues.topic;
         let noOfTopics = await this.topicModel.count({
-          where: { courseId: dataValue.dataValues.courseId , is_deleted: false},
+          where: { courseId: dataValue.dataValues.courseId , isDeleted: false},
         });
         item.dataValues.noOfTopics = noOfTopics;
       }
