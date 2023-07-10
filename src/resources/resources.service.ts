@@ -13,7 +13,7 @@ import { Users } from 'src/models/users.model';
 import { Op } from 'sequelize';
 import * as Moment from 'moment';
 import { Configuration } from 'src/models/configuration.model';
- 
+
 @Injectable()
 export class ResourcesService {
   constructor(
@@ -163,20 +163,20 @@ export class ResourcesService {
     let error = null;
 
     const resourcesAllocationData = await this.resourcesModel
-    .findAll({
+      .findAll({
       attributes: ['id','resourceName', 'resourceNo'],
       where: dto.resourceName ? { resourceName: dto.resourceName } : {isDeleted: 0},
-      include: [
-        {
-          model: this.resourcesDetailsModel,
-          attributes: ['id'],
+        include: [
+          {
+            model: this.resourcesDetailsModel,
+            attributes: ['id'],
           where: dto.status ? {status: dto.status }:{isDeleted: 0},
-        },
-      ],
-    })
-    .catch((err) => {
-      error = err;
-    });
+          },
+        ],
+      })
+      .catch((err) => {
+        error = err;
+      });
 
     if (error) {
       return HandleResponse(
@@ -211,20 +211,20 @@ export class ResourcesService {
     let error = null;
 
     const resourcesAllocationData = await this.resourcesModel
-    .findAll({
+      .findAll({
       attributes: ['id','resourceName', 'resourceNo'],
       where: dto.resourceName ? { resourceName: dto.resourceName } : {isDeleted: 0},
-      include: [
-        {
-          model: this.configurationModel,
-          attributes: ['id'],
+        include: [
+          {
+            model: this.configurationModel,
+            attributes: ['id'],
           where: {isDeleted: 0},
-        },
-      ],
-    })
-    .catch((err) => {
-      error = err;
-    });
+          },
+        ],
+      })
+      .catch((err) => {
+        error = err;
+      });
 
     if (error) {
       return HandleResponse(
@@ -298,123 +298,104 @@ export class ResourcesService {
   }
 
   async damagedResources(dto: DamagedResourcesDto) {
-    let error = null;
-
-    const resourceDetails: any = await this.resourcesModel
-      .findOne({
+      const resourceDetails: any = await this.resourcesModel.findOne({
         where: {
           resourceNo: dto.resourceNo,
           resourceName: dto.resourceName,
         },
+      }).catch((error) => {
+        return HandleResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `${Messages.FAILED_TO} damaged resources.`,
+          undefined,
+          {
+            errorMessage: error.original.sqlMessage,
+            field: error.fields,
+          }
+        );
       })
-      .catch((err) => {
-        error = err;
+
+      if (!resourceDetails || Object.keys(resourceDetails).length === 0) {
+        return HandleResponse(
+          HttpStatus.NOT_FOUND,
+          Messages.NOT_FOUND,
+          undefined,
+          undefined
+        );
+      }
+
+      const damageData = {
+        resourceId: resourceDetails.id,
+        addedBy: dto.addedBy,
+        reason: dto.reason,
+        status: 'Damaged',
+      };
+
+      await this.damagedResourcesModel.create({ ...damageData }).catch((error) => {
+        return HandleResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `${Messages.FAILED_TO} damaged resources.`,
+          undefined,
+          {
+            errorMessage: error.original.sqlMessage,
+            field: error.fields,
+          }
+        );
       });
 
-    if (error) {
-      return HandleResponse(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        `${Messages.FAILED_TO} damaged resources.`,
-        undefined,
+      const [updateResourcesDetails]: any = await this.resourcesDetailsModel.update(
+        { isDeleted: 1 },
         {
-          errorMessage: error.original.sqlMessage,
-          field: error.fields,
-        },
-      );
-    }
-
-      if (resourceDetails && Object.keys(resourceDetails).length > 0) {
-        let damageData = {
-          resourceId: resourceDetails.id,
-          addedBy: dto.addedBy,
-          reason: dto.reason,
-          status: 'Damaged',
-        };
-
-        const addDamageData: any = await this.damagedResourcesModel
-          .create({ ...damageData })
-          .catch((err) => {
-            error = err;
-          });
-
-        if (error) {
-          return HandleResponse(
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            `${Messages.FAILED_TO} damaged resources.`,
-            undefined,
-            {
-              errorMessage: error.original.sqlMessage,
-              field: error.fields,
-            },
-          );
+          where: {
+            resourceId: resourceDetails.id,
+          },
         }
-
-        if (addDamageData && Object.keys(addDamageData).length > 0) {
-          const updateResourcesDetails: any = await this.resourcesDetailsModel
-            .update(
-              { isDeleted: 1 },
-              {
-                where: {
-                  resourceId: resourceDetails.id,
-                },
-              },
-            )
-            .catch((err) => {
-              error = err;
-            });
-
-          const updateResourcesData: any = await this.resourcesModel
-            .update(
-              { isDeleted: 1 },
-              {
-                where: {
-                  id: resourceDetails.id,
-                },
-              },
-            )
-            .catch((err) => {
-              error = err;
-            });
-
-          if (error) {
-            return HandleResponse(
-              HttpStatus.INTERNAL_SERVER_ERROR,
-              `${Messages.FAILED_TO} damaged resources.`,
-              undefined,
-              {
-                errorMessage: error.original.sqlMessage,
-                field: error.fields,
-              },
-            );
+      ).catch((error) => {
+        return HandleResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `${Messages.FAILED_TO} damaged resources.`,
+          undefined,
+          {
+            errorMessage: error.original.sqlMessage,
+            field: error.fields,
           }
+        );
+      });
 
-          const [resourcesDetails] = updateResourcesDetails;
-          const [updateResources] = updateResourcesData;
-
-          if (resourcesDetails != 0 && updateResources === 1) {
-            return HandleResponse(
-              HttpStatus.OK,
-              `Damaged resource ${Messages.ADD_SUCCESS}`,
-              undefined,
-              undefined,
-            );
-          } else {
-            return HandleResponse(
-              HttpStatus.NOT_FOUND,
-              Messages.NOT_FOUND,
-              undefined,
-              undefined,
-            );
-          }
+      const [updateResources]: any= await this.resourcesModel.update(
+        { isDeleted: 1 },
+        {
+          where: {
+            id: resourceDetails.id,
+          },
         }
+      ).catch((error) => {
+        return HandleResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `${Messages.FAILED_TO} damaged resources.`,
+          undefined,
+          {
+            errorMessage: error.original.sqlMessage,
+            field: error.fields,
+          }
+        );
+      });
+
+      if (updateResourcesDetails === 1 || updateResources === 1) {
+        return HandleResponse(
+          HttpStatus.OK,
+          `Damaged resource ${Messages.ADD_SUCCESS}`,
+          undefined,
+          undefined
+        );
       } else {
         return HandleResponse(
           HttpStatus.NOT_FOUND,
           Messages.NOT_FOUND,
           undefined,
-          undefined,
+          undefined
         );
-      } 
+      }
   }
 
   async listOfDamagedResources() {
