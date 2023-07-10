@@ -13,6 +13,7 @@ import { AssignCourse } from './dto/assignCourse.dto';
 import { UserCourse } from 'src/models/userCourse.model';
 import { FindAssignCourse } from './dto/findUserCourseAssign.dto';
 import { AssignUserCourse } from 'src/models/assignUserCourse.model';
+import { UpdateDuration } from 'src/services/serviceLayer';
 @Injectable()
 export class ItpService {
   constructor(
@@ -26,7 +27,7 @@ export class ItpService {
   async addCourse(dto: TopicDto) {
     let error = null;
 
-    let courseAdd: any = {
+    const courseAdd: { userId: number; courseName: string } = {
       userId: dto.userId,
       courseName: dto.courseName,
     };
@@ -59,13 +60,12 @@ export class ItpService {
         });
 
       let values = dto.topic.map((item: any) => {
-        let result = {
+        return {
           courseId: course.dataValues.id,
           topicName: item.topicName,
           link: item.link,
           hour: item.hour,
         };
-        return result;
       });
 
       const topic: any = await this.topicModel
@@ -87,27 +87,19 @@ export class ItpService {
       }
 
       if (topic && Object.keys(topic).length > 0) {
-        let updateDuration = (data: any, data2: any[]) => {
-          let total = data;
-          for (let item in data2) {
-            total += data2[item];
-          }
-          return total;
-        };
-
         let hour: any = dto.topic.map((item) => item.hour);
 
         const updateOfCourseDuration: any = await this.courseModel
           .update(
             {
-              duration: updateDuration(
+              duration: UpdateDuration(
                 detailsOfCourse.dataValues.duration,
-                hour,
+                hour
               ),
             },
             {
               where: { id: course.dataValues.id },
-            },
+            }
           )
           .catch((err) => {
             error = err;
@@ -121,7 +113,7 @@ export class ItpService {
             {
               errorMessage: error.original.sqlMessage,
               field: error.fields,
-            },
+            }
           );
         }
 
@@ -132,14 +124,14 @@ export class ItpService {
             HttpStatus.OK,
             `Topic ${Messages.ADD_SUCCESS}`,
             undefined,
-            undefined,
+            undefined
           );
         } else {
           return HandleResponse(
             HttpStatus.NOT_FOUND,
             `Duration is ${Messages.UPDATE_FAILED}`,
             undefined,
-            undefined,
+            undefined
           );
         }
       } else {
@@ -160,14 +152,14 @@ export class ItpService {
             {
               errorMessage: error.original.sqlMessage,
               field: error.fields,
-            },
+            }
           );
         }
         return HandleResponse(
           HttpStatus.NOT_FOUND,
           `Topic ${Messages.NOT_FOUND}`,
           undefined,
-          undefined,
+          undefined
         );
       }
     } else {
@@ -429,7 +421,6 @@ export class ItpService {
 
   async deleteTopic(dto: DeleteTopic) {
     let error = null;
-
     const detailsOfCourse: any = await this.courseModel
       .findOne({
         where: { id: dto.courseId },
@@ -574,7 +565,7 @@ export class ItpService {
       for (let item of topicData) {
         let [dataValue] = item.dataValues.topic;
         let noOfTopics = await this.topicModel.count({
-          where: { courseId: dataValue.dataValues.courseId },
+          where: { courseId: dataValue.dataValues.courseId , isDeleted: false},
         });
         item.dataValues.noOfTopics = noOfTopics;
       }
