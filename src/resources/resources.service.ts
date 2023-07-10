@@ -298,13 +298,22 @@ export class ResourcesService {
   }
 
   async damagedResources(dto: DamagedResourcesDto) {
-    try {
       const resourceDetails: any = await this.resourcesModel.findOne({
         where: {
           resourceNo: dto.resourceNo,
           resourceName: dto.resourceName,
         },
-      });
+      }).catch((error) => {
+        return HandleResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `${Messages.FAILED_TO} damaged resources.`,
+          undefined,
+          {
+            errorMessage: error.original.sqlMessage,
+            field: error.fields,
+          }
+        );
+      })
 
       if (!resourceDetails || Object.keys(resourceDetails).length === 0) {
         return HandleResponse(
@@ -322,25 +331,55 @@ export class ResourcesService {
         status: 'Damaged',
       };
 
-      const data = await this.damagedResourcesModel.create({ ...damageData });
+      await this.damagedResourcesModel.create({ ...damageData }).catch((error) => {
+        return HandleResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `${Messages.FAILED_TO} damaged resources.`,
+          undefined,
+          {
+            errorMessage: error.original.sqlMessage,
+            field: error.fields,
+          }
+        );
+      });
 
-      const [updateResourcesDetails] = await this.resourcesDetailsModel.update(
+      const [updateResourcesDetails]: any = await this.resourcesDetailsModel.update(
         { isDeleted: 1 },
         {
           where: {
             resourceId: resourceDetails.id,
           },
         }
-      );
+      ).catch((error) => {
+        return HandleResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `${Messages.FAILED_TO} damaged resources.`,
+          undefined,
+          {
+            errorMessage: error.original.sqlMessage,
+            field: error.fields,
+          }
+        );
+      });
 
-      const [updateResources] = await this.resourcesModel.update(
+      const [updateResources]: any= await this.resourcesModel.update(
         { isDeleted: 1 },
         {
           where: {
             id: resourceDetails.id,
           },
         }
-      );
+      ).catch((error) => {
+        return HandleResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `${Messages.FAILED_TO} damaged resources.`,
+          undefined,
+          {
+            errorMessage: error.original.sqlMessage,
+            field: error.fields,
+          }
+        );
+      });
 
       if (updateResourcesDetails === 1 || updateResources === 1) {
         return HandleResponse(
@@ -357,17 +396,6 @@ export class ResourcesService {
           undefined
         );
       }
-    } catch (error) {
-      return HandleResponse(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        `${Messages.FAILED_TO} damaged resources.`,
-        undefined,
-        {
-          errorMessage: error.original.sqlMessage,
-          field: error.fields,
-        }
-      );
-    }
   }
 
   async listOfDamagedResources() {
