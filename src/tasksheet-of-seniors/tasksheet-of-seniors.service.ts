@@ -86,7 +86,7 @@ export class TasksheetOfSeniorsService {
       await transaction.commit();
       return HandleResponse(
         HttpStatus.OK,
-        `Senior add tasksheet details ${Messages.ADD_SUCCESS}.`,
+        `Senior add tasksheet details ${Messages.ADD_SUCCESS}`,
         undefined,
         undefined
       );
