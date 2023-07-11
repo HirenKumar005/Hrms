@@ -56,6 +56,9 @@ import { SupportIssues } from './models/supportIssue.model';
 import { TasksheetOfSenior } from './models/tasksheetOfSenior.model';
 import { TasksheetOfSeniorsModule } from './tasksheet-of-seniors/tasksheet-of-seniors.module';
 import { TasksheetAssignTo } from './models/tasksheetAssignTo.model';
+import { Project } from './models/project.model';
+import { ProjectAssignTo } from './models/projectAssignTo.model';
+import { ProjectModule } from './project/project.module';
 
 @Module({
   imports: [
@@ -106,6 +109,8 @@ import { TasksheetAssignTo } from './models/tasksheetAssignTo.model';
         SupportIssues,
         TasksheetOfSenior,
         TasksheetAssignTo,
+        Project,
+        ProjectAssignTo,
       ],
     }),
     MulterModule.register({
@@ -131,6 +136,7 @@ import { TasksheetAssignTo } from './models/tasksheetAssignTo.model';
     CountOfDataModule,
     TasksheetModule,
     TasksheetOfSeniorsModule,
+    ProjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],

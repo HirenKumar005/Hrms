@@ -21,6 +21,8 @@ import { BankDetails } from './bankDetails.model';
 import { EducationDetails } from './educationDetails.model';
 import { ReportTo } from './reportTo.model';
 import { Support } from './support.model';
+import { Project } from "./project.model";
+import { ProjectAssignTo } from "./projectAssignTo.model";
 
 @Table
 export class Users extends Model {
@@ -126,6 +128,12 @@ export class Users extends Model {
 
   @HasMany(() => ReportTo, { foreignKey: 'assignerId' })
   reportTo: ReportTo;
+
+  @HasMany(() => Project, { foreignKey: "addedBy" })
+  project: Project;
+
+  @HasMany(() => ProjectAssignTo, { foreignKey: "assignTo" })
+  projectAssignTo: ProjectAssignTo;
 
   @HasMany(() => Support)
   support: Support[];
