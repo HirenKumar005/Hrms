@@ -53,6 +53,9 @@ import { DamagedResources } from './models/damagedResources.model';
 import { UserCourse } from './models/userCourse.model';
 import { AssignUserCourse } from './models/assignUserCourse.model';
 import { SupportIssues } from './models/supportIssue.model';
+import { Project } from './models/project.model';
+import { ProjectAssignTo } from './models/projectAssignTo.model';
+import { ProjectModule } from './project/project.module';
 
 @Module({
   imports: [
@@ -100,7 +103,9 @@ import { SupportIssues } from './models/supportIssue.model';
         DamagedResources,
         UserCourse,
         AssignUserCourse,
-        SupportIssues
+        SupportIssues,
+        Project,
+        ProjectAssignTo,
       ],
     }),
     MulterModule.register({
@@ -125,6 +130,7 @@ import { SupportIssues } from './models/supportIssue.model';
     RecruitmentModule,
     CountOfDataModule,
     TasksheetModule,
+    ProjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],

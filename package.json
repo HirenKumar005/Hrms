@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
-    "@nestjs/config": "^2.3.1",
+    "@nestjs/config": "^2.3.4",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.0.2",
     "@nestjs/passport": "^9.0.3",
@@ -43,7 +43,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "sequelize": "^6.28.2",
+    "sequelize": "^6.32.1",
     "sequelize-typescript": "^2.1.5"
   },
   "devDependencies": {
