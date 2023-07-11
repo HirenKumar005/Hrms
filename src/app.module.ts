@@ -53,6 +53,9 @@ import { DamagedResources } from './models/damagedResources.model';
 import { UserCourse } from './models/userCourse.model';
 import { AssignUserCourse } from './models/assignUserCourse.model';
 import { SupportIssues } from './models/supportIssue.model';
+import { TasksheetOfSenior } from './models/tasksheetOfSenior.model';
+import { TasksheetOfSeniorsModule } from './tasksheet-of-seniors/tasksheet-of-seniors.module';
+import { TasksheetAssignTo } from './models/tasksheetAssignTo.model';
 
 @Module({
   imports: [
@@ -100,7 +103,9 @@ import { SupportIssues } from './models/supportIssue.model';
         DamagedResources,
         UserCourse,
         AssignUserCourse,
-        SupportIssues
+        SupportIssues,
+        TasksheetOfSenior,
+        TasksheetAssignTo,
       ],
     }),
     MulterModule.register({
@@ -125,6 +130,7 @@ import { SupportIssues } from './models/supportIssue.model';
     RecruitmentModule,
     CountOfDataModule,
     TasksheetModule,
+    TasksheetOfSeniorsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
