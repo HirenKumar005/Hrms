@@ -30,7 +30,7 @@ import { EmergencyContact } from './models/emergencyContact.model';
 import { Qualification } from './models/qualification.model';
 import { EducationDetails } from './models/educationDetails.model';
 import { TaskSheet } from './models/taskSheet.model';
-import { TasksheetModule } from './tasksheet/tasksheet.module';
+import { TaskSheetModule } from './tasksheet/taskSheet.module';
 import { ReportModule } from './report/report.module';
 import { ResourcesModule } from './resources/resources.module';
 import { Resources } from './models/resources.model';
@@ -53,6 +53,7 @@ import { DamagedResources } from './models/damagedResources.model';
 import { UserCourse } from './models/userCourse.model';
 import { AssignUserCourse } from './models/assignUserCourse.model';
 import { SupportIssues } from './models/supportIssue.model';
+import { TaskSheetOfSenior } from './models/taskSheetOfSenior.model';
 
 @Module({
   imports: [
@@ -100,7 +101,8 @@ import { SupportIssues } from './models/supportIssue.model';
         DamagedResources,
         UserCourse,
         AssignUserCourse,
-        SupportIssues
+        SupportIssues,
+        TaskSheetOfSenior,
       ],
     }),
     MulterModule.register({
@@ -124,7 +126,7 @@ import { SupportIssues } from './models/supportIssue.model';
     DashboardModule,
     RecruitmentModule,
     CountOfDataModule,
-    TasksheetModule,
+    TaskSheetModule,
   ],
   controllers: [AppController],
   providers: [AppService],
