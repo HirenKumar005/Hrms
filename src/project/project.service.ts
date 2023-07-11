@@ -1,12 +1,12 @@
-import { HttpStatus, Injectable } from "@nestjs/common";
-import { InjectConnection, InjectModel } from "@nestjs/sequelize";
-import { HandleResponse } from "src/services/handleResponse";
-import { Messages } from "src/utils/constants/message";
-import { Project } from "src/models/project.model";
-import { AddProjectDto } from "./dto/addProject.dto";
-import { ProjectAssignTo } from "src/models/projectAssignTo.model";
-import { Sequelize } from "sequelize";
-import { ListOfProjectDto } from "./dto/listOfProject.dto";
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { HandleResponse } from 'src/services/handleResponse';
+import { Messages } from 'src/utils/constants/message';
+import { Project } from 'src/models/project.model';
+import { AddProjectDto } from './dto/addProject.dto';
+import { ProjectAssignTo } from 'src/models/projectAssignTo.model';
+import { Sequelize } from 'sequelize';
+import { ListOfProjectDto } from './dto/listOfProject.dto';
 
 @Injectable()
 export class ProjectService {
