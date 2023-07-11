@@ -1,61 +1,52 @@
-import { MaxLength } from 'class-validator';
 import { DataTypes, Sequelize } from 'sequelize';
 import {
-  AllowNull,
-  AutoIncrement,
   Column,
-  Default,
-  ForeignKey,
   Model,
-  PrimaryKey,
   Table,
+  AutoIncrement,
+  PrimaryKey,
+  Default,
+  AllowNull,
 } from 'sequelize-typescript';
-import { Users } from './users.model';
 
 @Table
 export class TaskSheetOfSenior extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  @MaxLength(11)
   id: number;
 
-  @ForeignKey(() => Users)
-  @AllowNull(false)
-  @MaxLength(11)
-  @Column
-  addedBy: number;
-
-  @AllowNull(false)
-  @MaxLength(50)
+  @AllowNull(true)
   @Column
   projectName: string;
 
-  @AllowNull(false)
-  @MaxLength(50)
+  @AllowNull(true)
   @Column
   taskName: string;
 
-  @AllowNull(false)
-  @MaxLength(50)
+  @AllowNull(true)
   @Column
   takeDetails: string;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column({ type: DataTypes.DATEONLY })
   startDate: Date;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column({ type: DataTypes.DATEONLY })
   endDate: Date;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column({ type: DataTypes.TIME })
   estimateTime: string;
 
-  @AllowNull(true)
+  @AllowNull(false)
   @Column({ type: DataTypes.TIME })
   remainingTime: string;
+
+  @AllowNull(false)
+  @Column
+  addedBy: number;
 
   @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
   @Column({ type: 'TIMESTAMP' })
