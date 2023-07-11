@@ -13,6 +13,7 @@ import { Qualification } from 'src/models/qualification.model';
 import { Support } from 'src/models/support.model';
 import { ResourcesDetails } from 'src/models/resourcesDetails.model';
 import { SupportIssues } from 'src/models/supportIssue.model';
+import { TasksheetOfSenior } from 'src/models/tasksheetOfSenior.model';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { SupportIssues } from 'src/models/supportIssue.model';
       Qualification,
       Support,
       ResourcesDetails,
-      SupportIssues
+      SupportIssues,
+      TasksheetOfSenior,
     ]),
   ],
   controllers: [ListOfDataController],

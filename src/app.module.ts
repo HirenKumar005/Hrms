@@ -53,6 +53,9 @@ import { DamagedResources } from './models/damagedResources.model';
 import { UserCourse } from './models/userCourse.model';
 import { AssignUserCourse } from './models/assignUserCourse.model';
 import { SupportIssues } from './models/supportIssue.model';
+import { TasksheetOfSenior } from './models/tasksheetOfSenior.model';
+import { TasksheetOfSeniorsModule } from './tasksheet-of-seniors/tasksheet-of-seniors.module';
+import { TasksheetAssignTo } from './models/tasksheetAssignTo.model';
 import { Project } from './models/project.model';
 import { ProjectAssignTo } from './models/projectAssignTo.model';
 import { ProjectModule } from './project/project.module';
@@ -104,6 +107,8 @@ import { ProjectModule } from './project/project.module';
         UserCourse,
         AssignUserCourse,
         SupportIssues,
+        TasksheetOfSenior,
+        TasksheetAssignTo,
         Project,
         ProjectAssignTo,
       ],
@@ -130,6 +135,7 @@ import { ProjectModule } from './project/project.module';
     RecruitmentModule,
     CountOfDataModule,
     TasksheetModule,
+    TasksheetOfSeniorsModule,
     ProjectModule,
   ],
   controllers: [AppController],
