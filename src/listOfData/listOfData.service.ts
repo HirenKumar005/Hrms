@@ -14,6 +14,7 @@ import { Qualification } from 'src/models/qualification.model';
 import { Support } from 'src/models/support.model';
 import { ResourcesDetails } from 'src/models/resourcesDetails.model';
 import { SupportIssues } from 'src/models/supportIssue.model';
+import { TaskSheetOfSenior } from 'src/models/taskSheetOfSenior.model';
 
 const salt = 10;
 
@@ -32,6 +33,8 @@ export class ListOfDataService {
     @InjectModel(Support) private supportModel: Support,
     @InjectModel(ResourcesDetails) private resourcesDetailsModel: ResourcesDetails,
     @InjectModel(SupportIssues) private supportIssuesModel: SupportIssues,
+    @InjectModel(TaskSheetOfSenior)
+    private taskSheetOfSeniorModel: typeof TaskSheetOfSenior,
   ) {}
 
   async listOfData(dto: ListOfDataDto) {
