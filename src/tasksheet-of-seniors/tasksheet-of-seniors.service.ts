@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize';
 import { TasksheetAssignTo } from 'src/models/tasksheetAssignTo.model';
-import { TasksheetOfSenior } from 'src/models/tasksheetOfSenior.model';
+import { TaskSheetOfSenior } from 'src/models/tasksheetOfSenior.model';
 import { HandleResponse } from 'src/services/handleResponse';
 import { Messages } from 'src/utils/constants/message';
 import { SeniorAddTasksheetDto } from './dto/seniorAddTasksheet.dto';
@@ -10,8 +10,8 @@ import { SeniorAddTasksheetDto } from './dto/seniorAddTasksheet.dto';
 @Injectable()
 export class TasksheetOfSeniorsService {
   constructor(
-    @InjectModel(TasksheetOfSenior)
-    private tasksheetOfSeniorModel: typeof TasksheetOfSenior,
+    @InjectModel(TaskSheetOfSenior)
+    private taskSheetOfSeniorModel: typeof TaskSheetOfSenior,
     @InjectModel(TasksheetAssignTo)
     private tasksheetAssignToModel: typeof TasksheetAssignTo,
     @InjectConnection() private sequelize: Sequelize
@@ -31,7 +31,7 @@ export class TasksheetOfSeniorsService {
     };
 
     const transaction = await this.sequelize.transaction();
-    const seniorAddTasksheetDetails: any = await this.tasksheetOfSeniorModel
+    const seniorAddTasksheetDetails: any = await this.taskSheetOfSeniorModel
       .create(tasksheetOfSeniorDetails, {
         transaction: transaction,
       })

@@ -14,7 +14,6 @@ import {
 } from 'sequelize-typescript';
 import { Designation } from './designation.model';
 import { Position } from './position.model';
-import { TaskSheet } from './taskSheet.model';
 import { Address } from './address.model';
 import { EmergencyContact } from './emergencyContact.model';
 import { BankDetails } from './bankDetails.model';
@@ -108,9 +107,6 @@ export class Users extends Model {
 
   @BelongsTo(() => Position)
   position: Position;
-
-  @HasMany(() => TaskSheet)
-  taskSheet: TaskSheet;
 
   @HasMany(() => Address, { foreignKey: 'userId' })
   address: Address;

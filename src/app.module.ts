@@ -30,7 +30,7 @@ import { EmergencyContact } from './models/emergencyContact.model';
 import { Qualification } from './models/qualification.model';
 import { EducationDetails } from './models/educationDetails.model';
 import { TaskSheet } from './models/taskSheet.model';
-import { TasksheetModule } from './tasksheet/tasksheet.module';
+import { TaskSheetModule } from './tasksheet/taskSheet.module';
 import { ReportModule } from './report/report.module';
 import { ResourcesModule } from './resources/resources.module';
 import { Resources } from './models/resources.model';
@@ -53,9 +53,10 @@ import { DamagedResources } from './models/damagedResources.model';
 import { UserCourse } from './models/userCourse.model';
 import { AssignUserCourse } from './models/assignUserCourse.model';
 import { SupportIssues } from './models/supportIssue.model';
-import { TasksheetOfSenior } from './models/tasksheetOfSenior.model';
 import { TasksheetOfSeniorsModule } from './tasksheet-of-seniors/tasksheet-of-seniors.module';
 import { TasksheetAssignTo } from './models/tasksheetAssignTo.model';
+import { TaskSheetOfSenior } from './models/taskSheetOfSenior.model';
+
 
 @Module({
   imports: [
@@ -104,7 +105,7 @@ import { TasksheetAssignTo } from './models/tasksheetAssignTo.model';
         UserCourse,
         AssignUserCourse,
         SupportIssues,
-        TasksheetOfSenior,
+        TaskSheetOfSenior,
         TasksheetAssignTo,
       ],
     }),
@@ -129,7 +130,7 @@ import { TasksheetAssignTo } from './models/tasksheetAssignTo.model';
     DashboardModule,
     RecruitmentModule,
     CountOfDataModule,
-    TasksheetModule,
+    TaskSheetModule,
     TasksheetOfSeniorsModule,
   ],
   controllers: [AppController],

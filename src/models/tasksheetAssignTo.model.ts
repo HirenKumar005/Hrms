@@ -10,7 +10,7 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { TasksheetOfSenior } from './tasksheetOfSenior.model';
+import { TaskSheetOfSenior } from './taskSheetOfSenior.model';
 import { Users } from './users.model';
 
 @Table
@@ -21,7 +21,7 @@ export class TasksheetAssignTo extends Model {
   @MaxLength(11)
   id: number;
 
-  @ForeignKey(() => TasksheetOfSenior)
+  @ForeignKey(() => TaskSheetOfSenior)
   @AllowNull(false)
   @MaxLength(11)
   @Column
